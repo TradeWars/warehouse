@@ -50,7 +50,7 @@ func (app App) playerCreate(r io.Reader) (status types.Status, err error) {
 		return
 	}
 
-	return
+	return types.NewStatus(nil, true, ""), app.store.PlayerCreate(player)
 }
 
 func (app App) playerGet(r io.Reader) (status types.Status, err error) {

@@ -6,12 +6,13 @@ import (
 	"context"
 	"net/http"
 
-	"go.uber.org/zap"
-	validator "gopkg.in/go-playground/validator.v9"
-	"gopkg.in/mgo.v2"
-
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
+	"gopkg.in/go-playground/validator.v9"
+
+	"github.com/Southclaws/ScavengeSurviveCore/storage"
+	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
 // Config stores static configuration
@@ -24,7 +25,7 @@ type App struct {
 	config    Config
 	handlers  map[string][]Route
 	validator *validator.Validate
-	db        *mgo.Database
+	store     types.Storer
 	ctx       context.Context
 	cancel    context.CancelFunc
 }
@@ -36,6 +37,7 @@ func Start(config Config) {
 	app := App{
 		config:    config,
 		validator: validator.New(),
+		store:     storage.New(storage.Config{}),
 	}
 	app.handlers = map[string][]Route{
 		"player": playerRoutes(app),

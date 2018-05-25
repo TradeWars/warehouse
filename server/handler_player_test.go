@@ -29,6 +29,34 @@ func TestApp_playerCreate(t *testing.T) {
 			Success: true,
 			Message: "",
 		}},
+		{"v create 2", types.Player{
+			Name:         "Alice",
+			Pass:         "84dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+			Ipv4:         2544996175,
+			Alive:        &[]bool{true}[0],
+			Registration: time.Now(),
+			LastLogin:    time.Now(),
+			TotalSpawns:  &[]int32{0}[0],
+			Warnings:     &[]int32{0}[0],
+			Gpci:         "c801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		}, types.Status{
+			Success: true,
+			Message: "",
+		}},
+		{"v create dup", types.Player{
+			Name:         "Alice",
+			Pass:         "94dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+			Ipv4:         3544996175,
+			Alive:        &[]bool{true}[0],
+			Registration: time.Now(),
+			LastLogin:    time.Now(),
+			TotalSpawns:  &[]int32{0}[0],
+			Warnings:     &[]int32{0}[0],
+			Gpci:         "d801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		}, types.Status{
+			Success: false,
+			Message: "player name already registered",
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

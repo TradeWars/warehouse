@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"io"
+	"strings"
 
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
@@ -67,6 +68,9 @@ func (app *App) playerCreate(r io.Reader) (status types.Status, err error) {
 		zap.Any("player", player))
 
 	id, err := app.store.PlayerCreate(player)
+	if err != nil && strings.HasPrefix(err.Error(), "E11000") {
+		return types.NewStatus(nil, false, "player name already registered"), nil
+	}
 	return types.NewStatus(id, true, ""), err
 }
 

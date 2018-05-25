@@ -1,3 +1,5 @@
+// Package server provides a HTTP listener for handling requests from either a
+// game server or any form of interface to the data.
 package server
 
 import (
@@ -5,6 +7,7 @@ import (
 	"net/http"
 
 	"go.uber.org/zap"
+	validator "gopkg.in/go-playground/validator.v9"
 	"gopkg.in/mgo.v2"
 
 	"github.com/gorilla/handlers"
@@ -18,11 +21,12 @@ type Config struct {
 
 // App stores and controls program state
 type App struct {
-	config   Config
-	handlers map[string][]Route
-	db       *mgo.Database
-	ctx      context.Context
-	cancel   context.CancelFunc
+	config    Config
+	handlers  map[string][]Route
+	validator *validator.Validate
+	db        *mgo.Database
+	ctx       context.Context
+	cancel    context.CancelFunc
 }
 
 // Start fires up a HTTP server and routes API calls to the database manager
@@ -30,23 +34,20 @@ func Start(config Config) {
 	logger.Debug("initialising ssc-server with debug logging", zap.Any("config", config))
 
 	app := App{
-		config: config,
+		config:    config,
+		validator: validator.New(),
 	}
-
-	app.ctx, app.cancel = context.WithCancel(context.Background())
-
-	logger.Debug("configured routes, starting listener")
-
-	router := mux.NewRouter().StrictSlash(true)
-	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"HEAD", "GET", "POST", "PUT", "OPTIONS"})
-
 	app.handlers = map[string][]Route{
 		"player": playerRoutes(app),
 		"report": reportRoutes(app),
 		"ban":    banRoutes(app),
 	}
+	app.ctx, app.cancel = context.WithCancel(context.Background())
+
+	router := mux.NewRouter().StrictSlash(true)
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"HEAD", "GET", "POST", "PUT", "OPTIONS"})
 
 	for name, routes := range app.handlers {
 		logger.Debug("loaded handler",
@@ -73,6 +74,7 @@ func Start(config Config) {
 		}
 	}
 
+	logger.Debug("initialisation complete")
 	err := http.ListenAndServe(app.config.Bind, handlers.CORS(headersOk, originsOk, methodsOk)(router))
 
 	logger.Fatal("unexpected termination",

@@ -56,22 +56,22 @@ func banRoutes(app App) []Route {
 	}
 }
 
-func (app App) banCreate(r io.ReadCloser) (status types.Status, err error) {
+func (app App) banCreate(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) banRemove(r io.ReadCloser) (status types.Status, err error) {
+func (app App) banRemove(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) banUpdate(r io.ReadCloser) (status types.Status, err error) {
+func (app App) banUpdate(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) banGetList(r io.ReadCloser) (status types.Status, err error) {
+func (app App) banGetList(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) banGetInfo(r io.ReadCloser) (status types.Status, err error) {
+func (app App) banGetInfo(r io.Reader) (status types.Status, err error) {
 	return
 }

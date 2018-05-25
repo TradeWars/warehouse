@@ -22,7 +22,7 @@ type Route struct {
 }
 
 // EndpointHandler wraps a HTTP handler function with app-specific args/returns
-type EndpointHandler func(io.ReadCloser) (types.Status, error)
+type EndpointHandler func(io.Reader) (types.Status, error)
 
 // ServeHTTP implements the necessary chaining functionality for HTTP middleware
 func (f EndpointHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

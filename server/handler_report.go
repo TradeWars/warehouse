@@ -47,18 +47,18 @@ func reportRoutes(app App) []Route {
 	}
 }
 
-func (app App) reportCreate(r io.ReadCloser) (status types.Status, err error) {
+func (app App) reportCreate(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) reportRemove(r io.ReadCloser) (status types.Status, err error) {
+func (app App) reportRemove(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) reportGetList(r io.ReadCloser) (status types.Status, err error) {
+func (app App) reportGetList(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) reportGetInfo(r io.ReadCloser) (status types.Status, err error) {
+func (app App) reportGetInfo(r io.Reader) (status types.Status, err error) {
 	return
 }

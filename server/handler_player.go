@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"io"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
@@ -38,14 +39,24 @@ func playerRoutes(app App) []Route {
 	}
 }
 
-func (app App) playerCreate(r io.ReadCloser) (status types.Status, err error) {
+func (app App) playerCreate(r io.Reader) (status types.Status, err error) {
+	var player types.Player
+	err = json.NewDecoder(r).Decode(&player)
+	if err != nil {
+		return
+	}
+	err = app.validator.Struct(player)
+	if err != nil {
+		return
+	}
+
 	return
 }
 
-func (app App) playerGet(r io.ReadCloser) (status types.Status, err error) {
+func (app App) playerGet(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) playerUpdate(r io.ReadCloser) (status types.Status, err error) {
+func (app App) playerUpdate(r io.Reader) (status types.Status, err error) {
 	return
 }

@@ -1,17 +1,25 @@
 package main
 
 import (
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/kelseyhightower/envconfig"
 
 	"github.com/Southclaws/ScavengeSurviveCore/server"
 )
 
 func main() {
-	config := server.Config{}
-	err := envconfig.Process("SSC", &config)
+	config := &server.Config{}
+	err := envconfig.Process("SSC", config)
 	if err != nil {
 		panic(err)
 	}
 
-	server.Start(config)
+	app, err := server.Initialise(config)
+	if err != nil {
+		panic(err)
+	}
+
+	err = app.Start()
+
+	panic(err)
 }

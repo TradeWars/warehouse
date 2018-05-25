@@ -4,10 +4,12 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 
@@ -17,40 +19,56 @@ import (
 
 // Config stores static configuration
 type Config struct {
-	Bind string `split_words:"true" required:"true"` // bind interface
+	Bind      string `split_words:"true" required:"true"`
+	MongoHost string `split_words:"true" required:"true"`
+	MongoPort string `split_words:"true" required:"true"`
+	MongoName string `split_words:"true" required:"true"`
+	MongoUser string `split_words:"true" required:"true"`
+	MongoPass string `split_words:"true" required:"false"`
 }
 
 // App stores and controls program state
 type App struct {
-	config    Config
-	handlers  map[string][]Route
-	validator *validator.Validate
-	store     types.Storer
-	ctx       context.Context
-	cancel    context.CancelFunc
+	config     *Config
+	handlers   map[string][]Route
+	validator  *validator.Validate
+	store      types.Storer
+	httpServer *http.Server
+	ctx        context.Context
+	cancel     context.CancelFunc
 }
 
-// Start fires up a HTTP server and routes API calls to the database manager
-func Start(config Config) {
+// Initialise performs all the necessary actions to bootstrap the application
+// into a runnable state ready for starting with app.Start
+func Initialise(config *Config) (app *App, err error) {
 	logger.Debug("initialising ssc-server with debug logging", zap.Any("config", config))
 
-	app := App{
+	app = &App{
 		config:    config,
 		validator: validator.New(),
-		store:     storage.New(storage.Config{}),
 	}
 	app.handlers = map[string][]Route{
-		"player": playerRoutes(app),
-		"report": reportRoutes(app),
-		"ban":    banRoutes(app),
+		"player": app.playerRoutes(),
+		"admin":  app.adminRoutes(),
+		"report": app.reportRoutes(),
+		"ban":    app.banRoutes(),
+	}
+	app.store, err = storage.New(storage.Config{
+		Host: config.MongoHost,
+		Port: config.MongoPort,
+		Name: config.MongoName,
+		User: config.MongoUser,
+		Pass: config.MongoPass,
+	})
+	if err != nil {
+		err = errors.Wrap(err, "failed to connect to storage")
+		return
 	}
 	app.ctx, app.cancel = context.WithCancel(context.Background())
 
-	router := mux.NewRouter().StrictSlash(true)
-	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"HEAD", "GET", "POST", "PUT", "OPTIONS"})
+	fmt.Printf("app.store: %p\n", app.store)
 
+	router := mux.NewRouter().StrictSlash(true)
 	for name, routes := range app.handlers {
 		logger.Debug("loaded handler",
 			zap.String("name", name),
@@ -76,9 +94,27 @@ func Start(config Config) {
 		}
 	}
 
-	logger.Debug("initialisation complete")
-	err := http.ListenAndServe(app.config.Bind, handlers.CORS(headersOk, originsOk, methodsOk)(router))
+	app.httpServer = &http.Server{
+		Addr: app.config.Bind,
+		Handler: handlers.CORS(
+			handlers.AllowedHeaders([]string{"X-Requested-With"}),
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedMethods([]string{"HEAD", "GET", "POST", "PUT", "OPTIONS"}),
+		)(router),
+	}
 
-	logger.Fatal("unexpected termination",
-		zap.Error(err))
+	logger.Debug("initialisation complete")
+
+	return
+}
+
+// Start fires up the HTTP server and blocks until failure
+func (app *App) Start() (err error) {
+	return app.httpServer.ListenAndServe()
+}
+
+// Stop gracefully shuts down the application
+func (app *App) Stop() (err error) {
+	app.cancel()
+	return app.httpServer.Close()
 }

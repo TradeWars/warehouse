@@ -1,5 +1,11 @@
 package types
 
+import (
+	"fmt"
+
+	"gopkg.in/go-playground/validator.v9"
+)
+
 // Status is a custom status object returned by all endpoints. This is due
 // to the fact that HTTP status codes do not match the use-case of this service
 // so all endpoints will return either 200 or 500 with this object wrapping any
@@ -15,6 +21,20 @@ type Status struct {
 // message may be left blank however
 func NewStatus(result interface{}, success bool, message string) Status {
 	return Status{result, success, message}
+}
+
+// NewStatusValidationError returns a Status from a set of validation errors
+func NewStatusValidationError(ve validator.ValidationErrors) Status {
+	var errors []string
+	for _, e := range ve {
+		errors = append(errors, fmt.Sprintf("validation '%s' failed for '%s'", e.Tag(), e.Field()))
+	}
+
+	return Status{
+		errors,
+		false,
+		"payload validation failed",
+	}
 }
 
 // ExampleStatus returns an example of Status

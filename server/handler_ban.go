@@ -6,7 +6,7 @@ import (
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
-func banRoutes(app App) []Route {
+func (app App) banRoutes() []Route {
 	return []Route{
 		{
 			"BanIO_Create",

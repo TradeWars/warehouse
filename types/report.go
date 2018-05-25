@@ -3,27 +3,27 @@ package types
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // Report represents a behaviour report made against a player
 type Report struct {
-	ID       uuid.UUID `json:"id"`
-	Name     string    `json:"name"`
-	Reason   string    `json:"reason"`
-	By       string    `json:"by"`
-	Date     time.Time `json:"date"`
-	Read     bool      `json:"read"`
-	Type     string    `json:"type"`
-	Position Geo       `json:"position"`
-	Metadata string    `json:"metadata"`
-	Archived bool      `json:"archived"`
+	ID       bson.ObjectId `validate:"omitempty" json:"_id"`
+	Name     string        `validate:"required" json:"name"`
+	Reason   string        `validate:"required" json:"reason"`
+	By       string        `validate:"required" json:"by"`
+	Date     time.Time     `validate:"required" json:"date"`
+	Read     bool          `validate:"required" json:"read"`
+	Type     string        `validate:"required" json:"type"`
+	Position Geo           `validate:"required" json:"position"`
+	Metadata string        `validate:"required" json:"metadata"`
+	Archived bool          `validate:"required" json:"archived"`
 }
 
 // ExampleReport returns an example report
 func ExampleReport() Report {
 	return Report{
-		ID:       uuid.New(),
+		ID:       bson.NewObjectId(),
 		Name:     "John",
 		Reason:   "Health hack",
 		By:       "Alice",

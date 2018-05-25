@@ -18,11 +18,10 @@ func init() {
 
 	if testing {
 		config = zap.NewDevelopmentConfig()
+		config.EncoderConfig.EncodeTime = nil
 		config.DisableCaller = true
 	} else {
 		config = zap.NewProductionConfig()
-		config.EncoderConfig.MessageKey = "@message"
-		config.EncoderConfig.TimeKey = "@timestamp"
 		config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
 		if debug {
@@ -32,13 +31,11 @@ func init() {
 		}
 	}
 
-	_logger, err := config.Build()
+	var err error
+	logger, err = config.Build()
 	if err != nil {
 		panic(err)
 	}
 
-	logger = _logger.With(
-		zap.String("@version", os.Getenv("GIT_HASH")),
-		zap.Namespace("@fields"),
-	)
+	logger.Debug("debug logging active")
 }

@@ -13,8 +13,8 @@ import (
 // Route represents an API route and its associated handler function
 type Route struct {
 	Name          string      `json:"name"`
-	Path          string      `json:"path"`
 	Method        string      `json:"method"`
+	Path          string      `json:"path"`
 	Authenticated bool        `json:"authenticated"`
 	Accepts       interface{} `json:"accepts"`
 	Returns       interface{} `json:"returns"`
@@ -30,8 +30,13 @@ func (f EndpointHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Error("request handler failed",
 			zap.Error(err))
+		status = types.NewStatus(nil, false, err.Error())
 	}
 
+	logger.Debug("responding with status",
+		zap.Any("status", status))
+
+	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(status)
 	if err != nil {
 		logger.Error("failed to encode response",

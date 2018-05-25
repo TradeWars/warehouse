@@ -4,33 +4,46 @@ import (
 	"encoding/json"
 	"io"
 
+	"go.uber.org/zap"
+	"gopkg.in/go-playground/validator.v9"
+	"gopkg.in/mgo.v2/bson"
+
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
-func playerRoutes(app App) []Route {
+func (app *App) playerRoutes() []Route {
 	return []Route{
 		{
-			"PlayerCreate",
+			"playerCreate",
 			"POST",
-			"/store/player/{id}",
+			"/store/playerCreate",
 			true,
 			types.ExamplePlayer(),
 			types.ExampleStatus(true, true),
 			app.playerCreate,
 		},
 		{
-			"PlayerGet",
+			"playerGetByName",
 			"GET",
-			"/store/player/{id}",
+			"/store/playerGetByName",
 			true,
-			nil,
+			"John",
 			types.ExamplePlayer(),
-			app.playerGet,
+			app.playerGetByName,
 		},
 		{
-			"PlayerUpdate",
+			"playerGetByID",
+			"GET",
+			"/store/playerGetByID",
+			true,
+			bson.NewObjectId(),
+			types.ExamplePlayer(),
+			app.playerGetByID,
+		},
+		{
+			"playerUpdate",
 			"PATCH",
-			"/store/player/{id}",
+			"/store/playerUpdate",
 			true,
 			types.ExamplePlayer(),
 			types.ExampleStatus(true, true),
@@ -39,7 +52,7 @@ func playerRoutes(app App) []Route {
 	}
 }
 
-func (app App) playerCreate(r io.Reader) (status types.Status, err error) {
+func (app *App) playerCreate(r io.Reader) (status types.Status, err error) {
 	var player types.Player
 	err = json.NewDecoder(r).Decode(&player)
 	if err != nil {
@@ -47,16 +60,52 @@ func (app App) playerCreate(r io.Reader) (status types.Status, err error) {
 	}
 	err = app.validator.Struct(player)
 	if err != nil {
+		return types.NewStatusValidationError(err.(validator.ValidationErrors)), nil
+	}
+
+	logger.Debug("received request playerCreate",
+		zap.Any("player", player))
+
+	id, err := app.store.PlayerCreate(player)
+	return types.NewStatus(id, true, ""), err
+}
+
+func (app *App) playerGetByName(r io.Reader) (status types.Status, err error) {
+	var name string
+	err = json.NewDecoder(r).Decode(&name)
+	if err != nil {
 		return
 	}
 
-	return types.NewStatus(nil, true, ""), app.store.PlayerCreate(player)
-}
+	player, err := app.store.PlayerGetByName(name)
+	status = types.NewStatus(player, true, "")
 
-func (app App) playerGet(r io.Reader) (status types.Status, err error) {
 	return
 }
 
-func (app App) playerUpdate(r io.Reader) (status types.Status, err error) {
+func (app *App) playerGetByID(r io.Reader) (status types.Status, err error) {
+	var id bson.ObjectId
+	err = json.NewDecoder(r).Decode(&id)
+	if err != nil {
+		return
+	}
+
+	player, err := app.store.PlayerGetByID(id)
+	status = types.NewStatus(player, true, "")
+
 	return
+}
+
+func (app *App) playerUpdate(r io.Reader) (status types.Status, err error) {
+	var player types.Player
+	err = json.NewDecoder(r).Decode(&player)
+	if err != nil {
+		return
+	}
+	err = app.validator.Struct(player)
+	if err != nil {
+		return types.NewStatusValidationError(err.(validator.ValidationErrors)), nil
+	}
+
+	return types.NewStatus(nil, true, ""), app.store.PlayerUpdate(player.ID, player)
 }

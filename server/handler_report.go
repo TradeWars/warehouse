@@ -6,7 +6,7 @@ import (
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
-func reportRoutes(app App) []Route {
+func (app App) reportRoutes() []Route {
 	return []Route{
 		{
 			"ReportCreate",

@@ -4,6 +4,7 @@ package storage
 
 import (
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
 	"github.com/Southclaws/ScavengeSurviveCore/util"
 )
@@ -57,4 +58,12 @@ func New(config Config) (mgr *Manager, err error) {
 	)
 
 	return
+}
+
+// DeleteEverythingPermanently should only be used during testing!
+func (mgr *Manager) DeleteEverythingPermanently() error {
+	mgr.players.RemoveAll(bson.M{})
+	// mgr.reports.RemoveAll(bson.M{})
+	// mgr.bans.RemoveAll(bson.M{})
+	return nil
 }

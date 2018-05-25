@@ -4,7 +4,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/handlers"
@@ -65,8 +64,6 @@ func Initialise(config *Config) (app *App, err error) {
 		return
 	}
 	app.ctx, app.cancel = context.WithCancel(context.Background())
-
-	fmt.Printf("app.store: %p\n", app.store)
 
 	router := mux.NewRouter().StrictSlash(true)
 	for name, routes := range app.handlers {

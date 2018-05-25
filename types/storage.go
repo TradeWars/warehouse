@@ -11,4 +11,7 @@ type Storer interface {
 	PlayerGetByName(name string) (player Player, err error)
 	PlayerGetByID(id bson.ObjectId) (player Player, err error)
 	PlayerUpdate(id bson.ObjectId, player Player) (err error)
+
+	// misc
+	DeleteEverythingPermanently() error
 }

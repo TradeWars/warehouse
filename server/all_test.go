@@ -33,6 +33,10 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
+	err = app.store.DeleteEverythingPermanently()
+	if err != nil {
+		panic(err)
+	}
 
 	go app.Start()
 

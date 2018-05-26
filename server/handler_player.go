@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
+	"github.com/globalsign/mgo/bson"
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
-	"gopkg.in/mgo.v2/bson"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )

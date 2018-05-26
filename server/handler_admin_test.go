@@ -1,13 +1,15 @@
 package server
 
 import (
+	"encoding/json"
+	"net/http"
 	"testing"
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
-	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -112,11 +114,11 @@ func TestApp_adminSet(t *testing.T) {
 				return
 			}
 
-			assert.Equal(t, 200, resp.StatusCode())
+			assert.Equal(t, http.StatusOK, resp.StatusCode())
 
 			if status.Success {
 				assert.Equal(t, tt.wantStatus.Success, true)
-				assert.Len(t, status.Result, 24)
+				assert.Empty(t, status.Result)
 				assert.Empty(t, status.Message)
 			} else {
 				assert.Equal(t, tt.wantStatus.Success, false)
@@ -132,7 +134,7 @@ func TestApp_adminGetList(t *testing.T) {
 
 	resp, err := client.R().
 		SetResult(&status).
-		Post("/store/adminGetList")
+		Get("/store/adminGetList")
 
 	if err != nil {
 		t.Error(err)
@@ -140,6 +142,10 @@ func TestApp_adminGetList(t *testing.T) {
 	}
 
 	assert.Equal(t, 200, resp.StatusCode())
+
+	var admins []types.Admin
+	b, _ := json.Marshal(status.Result)
+	assert.NoError(t, json.Unmarshal(b, &admins))
 
 	wantAdmins := []types.Admin{
 		types.Admin{
@@ -151,10 +157,13 @@ func TestApp_adminGetList(t *testing.T) {
 			Level:    &[]int32{3}[0],
 		},
 	}
-	admins, ok := status.Result.([]types.Admin)
 
-	assert.True(t, ok)
-	assert.Equal(t, wantAdmins, admins)
+	assert.Equal(t, len(wantAdmins), len(admins))
+
+	for i := range admins {
+		assert.Equal(t, wantAdmins[i].PlayerID, admins[i].PlayerID)
+		assert.Equal(t, wantAdmins[i].Level, admins[i].Level)
+	}
 }
 
 func TestAdminPost(t *testing.T) {

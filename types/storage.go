@@ -1,7 +1,7 @@
 package types
 
 import (
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 // Storer declares a set of CRUD functions for persisting and accessing data

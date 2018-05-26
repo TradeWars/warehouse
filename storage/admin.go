@@ -3,9 +3,9 @@ package storage
 import (
 	"time"
 
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"github.com/pkg/errors"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
@@ -13,7 +13,7 @@ import (
 func (mgr *Manager) ensureAdminCollection() (err error) {
 	mgr.admins = mgr.db.C("admins")
 
-	err = mgr.players.EnsureIndex(mgo.Index{
+	err = mgr.admins.EnsureIndex(mgo.Index{
 		Key:    []string{"player_id"},
 		Unique: true,
 	})
@@ -46,7 +46,7 @@ func (mgr *Manager) AdminSetLevel(id bson.ObjectId, level int32) (err error) {
 		if level == 0 {
 			err = mgr.admins.Remove(bson.M{"player_id": id})
 		} else {
-			err = mgr.admins.Update(bson.M{"player_id": id}, types.Admin{Level: &level})
+			err = mgr.admins.Update(bson.M{"player_id": id}, bson.M{"$set": bson.M{"level": level}})
 		}
 	}
 	return

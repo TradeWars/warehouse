@@ -33,6 +33,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
+	logger.Info("clearing database before running tests")
 	err = app.store.DeleteEverythingPermanently()
 	if err != nil {
 		panic(err)

@@ -3,23 +3,23 @@ package types
 import (
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 // Player represents a player in the game and all their data
 type Player struct {
-	ID           bson.ObjectId `validate:"omitempty,required,len=24" json:"_id" bson:"_id"`
-	Name         string        `validate:"required,max=24" json:"name"`
-	Pass         string        `validate:"required,len=128" json:"pass"`
-	Ipv4         uint32        `validate:"required" json:"ipv4"`
-	Alive        *bool         `validate:"required" json:"alive"`
-	Registration time.Time     `validate:"required" json:"regdate"`
-	LastLogin    time.Time     `validate:"required" json:"lastlog"`
-	LastSpawn    time.Time     `validate:"omitempty" json:"spawntime,omitempty"`
-	TotalSpawns  *int32        `validate:"required" json:"spawns"`
-	Warnings     *int32        `validate:"required" json:"warnings"`
-	Gpci         string        `validate:"required,len=40" json:"gpci"`
-	Archived     bool          `validate:"omitempty" json:"archived,omitempty"`
+	ID           bson.ObjectId `validate:"omitempty,required,len=12" json:"_id" bson:"_id"`
+	Name         string        `validate:"required,max=24" json:"name" bson:"name"`
+	Pass         string        `validate:"required,len=128" json:"pass" bson:"pass"`
+	Ipv4         uint32        `validate:"required" json:"ipv4" bson:"ipv4"`
+	Alive        *bool         `validate:"required" json:"alive" bson:"alive"`
+	Registration time.Time     `validate:"required" json:"regdate" bson:"regdate"`
+	LastLogin    time.Time     `validate:"required" json:"lastlog" bson:"lastlog"`
+	LastSpawn    time.Time     `validate:"omitempty" json:"spawntime,omitempty" bson:"spawntime,omitempty"`
+	TotalSpawns  *int32        `validate:"required" json:"spawns" bson:"spawns"`
+	Warnings     *int32        `validate:"required" json:"warnings" bson:"warnings"`
+	Gpci         string        `validate:"required,len=40" json:"gpci" bson:"gpci"`
+	Archived     bool          `validate:"omitempty" json:"archived,omitempty" bson:"archived,omitempty"`
 }
 
 // ExamplePlayer returns an example object of a player

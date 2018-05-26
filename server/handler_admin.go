@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"io"
 
+	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
-func (app App) adminRoutes() []Route {
+func (app *App) adminRoutes() []Route {
 	return []Route{
 		{
 			"adminSet",
@@ -32,7 +33,7 @@ func (app App) adminRoutes() []Route {
 	}
 }
 
-func (app App) adminSet(r io.Reader) (status types.Status, err error) {
+func (app *App) adminSet(r io.Reader) (status types.Status, err error) {
 	var admin types.Admin
 	err = json.NewDecoder(r).Decode(&admin)
 	if err != nil {
@@ -43,10 +44,13 @@ func (app App) adminSet(r io.Reader) (status types.Status, err error) {
 		return types.NewStatusValidationError(err.(validator.ValidationErrors)), nil
 	}
 
+	logger.Debug("received request adminSet",
+		zap.Any("admin", admin))
+
 	return types.NewStatus(nil, true, ""), app.store.AdminSetLevel(admin.PlayerID, *admin.Level)
 }
 
-func (app App) adminGetList(r io.Reader) (status types.Status, err error) {
+func (app *App) adminGetList(r io.Reader) (status types.Status, err error) {
 	list, err := app.store.AdminGetList()
 	return types.NewStatus(list, true, ""), err
 }

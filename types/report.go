@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 // Report represents a behaviour report made against a player

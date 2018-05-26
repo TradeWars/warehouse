@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 // Ban contains all the information for a banned player

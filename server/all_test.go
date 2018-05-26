@@ -29,7 +29,7 @@ func TestMain(m *testing.M) {
 		SetRESTMode().
 		SetHostURL("http://" + config.Bind)
 
-	app, err := Initialise(config)
+	app, err = Initialise(config)
 	if err != nil {
 		panic(err)
 	}

@@ -39,14 +39,14 @@ func (mgr *Manager) AdminSetLevel(id bson.ObjectId, level int32) (err error) {
 		err = mgr.admins.Insert(types.Admin{
 			ID:       bson.NewObjectId(),
 			PlayerID: id,
-			Level:    level,
+			Level:    &level,
 			Date:     time.Now(),
 		})
 	} else {
 		if level == 0 {
 			err = mgr.admins.Remove(bson.M{"player_id": id})
 		} else {
-			err = mgr.admins.Update(bson.M{"player_id": id}, types.Admin{Level: level})
+			err = mgr.admins.Update(bson.M{"player_id": id}, types.Admin{Level: &level})
 		}
 	}
 	return

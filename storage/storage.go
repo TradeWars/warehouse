@@ -65,7 +65,8 @@ func New(config Config) (mgr *Manager, err error) {
 // DeleteEverythingPermanently should only be used during testing!
 func (mgr *Manager) DeleteEverythingPermanently() error {
 	mgr.players.RemoveAll(bson.M{})
-	// mgr.reports.RemoveAll(bson.M{})
-	// mgr.bans.RemoveAll(bson.M{})
+	mgr.admins.RemoveAll(bson.M{})
+	mgr.reports.RemoveAll(bson.M{})
+	mgr.bans.RemoveAll(bson.M{})
 	return nil
 }

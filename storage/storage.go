@@ -17,6 +17,7 @@ type Manager struct {
 
 	// Collections
 	players *mgo.Collection
+	admins  *mgo.Collection
 	reports *mgo.Collection
 	bans    *mgo.Collection
 }
@@ -53,8 +54,9 @@ func New(config Config) (mgr *Manager, err error) {
 
 	err = util.ErrSeq(
 		mgr.ensurePlayerCollection(),
-		// mgr.ensureReportCollection(), // mgr.reports = mgr.db.C("reports")
-		// mgr.ensureBanCollection(), // mgr.bans = mgr.db.C("bans")
+		mgr.ensureAdminCollection(),
+		mgr.ensureReportCollection(),
+		mgr.ensureBanCollection(),
 	)
 
 	return

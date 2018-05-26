@@ -17,6 +17,12 @@ type Storer interface {
 	AdminSetLevel(id bson.ObjectId, level int32) (err error)
 	AdminGetList() (result []Admin, err error)
 
+	// Report interface
+	ReportCreate(report Report) (id bson.ObjectId, err error)
+	ReportArchive(id bson.ObjectId, archived bool) (err error)
+	ReportGetList() (result []Report, err error)
+	ReportGet(id bson.ObjectId) (result Report, err error)
+
 	// misc
 	DeleteEverythingPermanently() error
 }

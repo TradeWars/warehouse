@@ -1,6 +1,9 @@
 language: go
 go:
   - 1.10.x
+env:
+  - DEBUG=1
+  - TESTING=1
 services:
   - mongodb
 before_script:

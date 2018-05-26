@@ -18,7 +18,7 @@ var (
 	adminPlayerID3 bson.ObjectId
 )
 
-func TestAdminPre(t *testing.T) {
+func TestPre_admin(t *testing.T) {
 	var err error
 	adminPlayerID1, err = app.store.PlayerCreate(types.Player{
 		Name:         "adminPlayerID1",
@@ -58,7 +58,7 @@ func TestAdminPre(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestApp_adminSet(t *testing.T) {
+func Test_adminSet(t *testing.T) {
 	tests := []struct {
 		name       string
 		body       types.Admin
@@ -129,7 +129,7 @@ func TestApp_adminSet(t *testing.T) {
 	}
 }
 
-func TestApp_adminGetList(t *testing.T) {
+func Test_adminGetList(t *testing.T) {
 	var status types.Status
 
 	resp, err := client.R().
@@ -166,7 +166,7 @@ func TestApp_adminGetList(t *testing.T) {
 	}
 }
 
-func TestAdminPost(t *testing.T) {
+func TestPost_admin(t *testing.T) {
 	var err error
 
 	err = app.store.PlayerRemove(adminPlayerID1)

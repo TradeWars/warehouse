@@ -5,7 +5,7 @@ services:
   - mongodb
 before_script:
   - |
-    mongo ssc --eval 'db.createUser({
+    mongo ss --eval 'db.createUser({
         user:"root",
         pwd:"root",
         roles:["readWrite"]

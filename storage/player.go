@@ -3,7 +3,6 @@ package storage
 import (
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/pkg/errors"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
@@ -25,14 +24,7 @@ func (mgr *Manager) ensurePlayerCollection() (err error) {
 // PlayerCreate creates a new player account in the database
 func (mgr *Manager) PlayerCreate(player types.Player) (id bson.ObjectId, err error) {
 	player.ID = bson.NewObjectId()
-
-	err = mgr.players.Insert(player)
-	if err != nil {
-		err = errors.Wrap(err, "failed to insert")
-		return
-	}
-
-	return player.ID, err
+	return player.ID, mgr.players.Insert(player)
 }
 
 // PlayerGetByName returns a player object by name

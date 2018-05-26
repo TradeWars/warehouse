@@ -2,6 +2,7 @@ package server
 
 import (
 	"io"
+	"net/url"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
@@ -47,18 +48,18 @@ func (app App) reportRoutes() []Route {
 	}
 }
 
-func (app App) reportCreate(r io.Reader) (status types.Status, err error) {
+func (app App) reportCreate(r io.Reader, query url.Values) (status types.Status, err error) {
 	return
 }
 
-func (app App) reportRemove(r io.Reader) (status types.Status, err error) {
+func (app App) reportRemove(r io.Reader, query url.Values) (status types.Status, err error) {
 	return
 }
 
-func (app App) reportGetList(r io.Reader) (status types.Status, err error) {
+func (app App) reportGetList(r io.Reader, query url.Values) (status types.Status, err error) {
 	return
 }
 
-func (app App) reportGetInfo(r io.Reader) (status types.Status, err error) {
+func (app App) reportGetInfo(r io.Reader, query url.Values) (status types.Status, err error) {
 	return
 }

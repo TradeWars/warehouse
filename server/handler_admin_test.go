@@ -13,15 +13,15 @@ import (
 )
 
 var (
-	playerID1 bson.ObjectId
-	playerID2 bson.ObjectId
-	playerID3 bson.ObjectId
+	adminPlayerID1 bson.ObjectId
+	adminPlayerID2 bson.ObjectId
+	adminPlayerID3 bson.ObjectId
 )
 
 func TestAdminPre(t *testing.T) {
 	var err error
-	playerID1, err = app.store.PlayerCreate(types.Player{
-		Name:         "playerID1",
+	adminPlayerID1, err = app.store.PlayerCreate(types.Player{
+		Name:         "adminPlayerID1",
 		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
 		Ipv4:         1544996175,
 		Alive:        &[]bool{true}[0],
@@ -32,8 +32,8 @@ func TestAdminPre(t *testing.T) {
 		Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
 	})
 	assert.NoError(t, err)
-	playerID2, err = app.store.PlayerCreate(types.Player{
-		Name:         "playerID2",
+	adminPlayerID2, err = app.store.PlayerCreate(types.Player{
+		Name:         "adminPlayerID2",
 		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
 		Ipv4:         1544996175,
 		Alive:        &[]bool{true}[0],
@@ -44,8 +44,8 @@ func TestAdminPre(t *testing.T) {
 		Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
 	})
 	assert.NoError(t, err)
-	playerID3, err = app.store.PlayerCreate(types.Player{
-		Name:         "playerID3",
+	adminPlayerID3, err = app.store.PlayerCreate(types.Player{
+		Name:         "adminPlayerID3",
 		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
 		Ipv4:         1544996175,
 		Alive:        &[]bool{true}[0],
@@ -65,35 +65,35 @@ func TestApp_adminSet(t *testing.T) {
 		wantStatus types.Status
 	}{
 		{"v create 1", types.Admin{
-			PlayerID: playerID1,
+			PlayerID: adminPlayerID1,
 			Level:    &[]int32{1}[0],
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v create 2", types.Admin{
-			PlayerID: playerID2,
+			PlayerID: adminPlayerID2,
 			Level:    &[]int32{2}[0],
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v create 3", types.Admin{
-			PlayerID: playerID3,
+			PlayerID: adminPlayerID3,
 			Level:    &[]int32{3}[0],
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v set 3 0", types.Admin{
-			PlayerID: playerID3,
+			PlayerID: adminPlayerID3,
 			Level:    &[]int32{0}[0],
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v set 2 3", types.Admin{
-			PlayerID: playerID2,
+			PlayerID: adminPlayerID2,
 			Level:    &[]int32{3}[0],
 		}, types.Status{
 			Success: true,
@@ -149,11 +149,11 @@ func TestApp_adminGetList(t *testing.T) {
 
 	wantAdmins := []types.Admin{
 		types.Admin{
-			PlayerID: playerID1,
+			PlayerID: adminPlayerID1,
 			Level:    &[]int32{1}[0],
 		},
 		types.Admin{
-			PlayerID: playerID2,
+			PlayerID: adminPlayerID2,
 			Level:    &[]int32{3}[0],
 		},
 	}
@@ -169,10 +169,10 @@ func TestApp_adminGetList(t *testing.T) {
 func TestAdminPost(t *testing.T) {
 	var err error
 
-	err = app.store.PlayerRemove(playerID1)
+	err = app.store.PlayerRemove(adminPlayerID1)
 	assert.NoError(t, err)
-	err = app.store.PlayerRemove(playerID2)
+	err = app.store.PlayerRemove(adminPlayerID2)
 	assert.NoError(t, err)
-	err = app.store.PlayerRemove(playerID3)
+	err = app.store.PlayerRemove(adminPlayerID3)
 	assert.NoError(t, err)
 }

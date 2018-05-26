@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
 
 	"go.uber.org/zap"
 
@@ -22,11 +23,11 @@ type Route struct {
 }
 
 // EndpointHandler wraps a HTTP handler function with app-specific args/returns
-type EndpointHandler func(io.Reader) (types.Status, error)
+type EndpointHandler func(r io.Reader, query url.Values) (types.Status, error)
 
 // ServeHTTP implements the necessary chaining functionality for HTTP middleware
 func (f EndpointHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	status, err := f(r.Body)
+	status, err := f(r.Body, r.URL.Query())
 	if err != nil {
 		logger.Error("request handler failed",
 			zap.Error(err))

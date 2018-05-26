@@ -9,6 +9,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/dyninc/qstring"
+  packages = ["."]
+  revision = "ab5840a88e818d51076cb7e9708e7cb7ff125a27"
+
+[[projects]]
+  branch = "master"
   name = "github.com/globalsign/mgo"
   packages = [
     ".",
@@ -155,6 +161,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d454a65a5aad7aa402880341cb4bc74116c6ebfcfc0eb45484fa5d71d7600815"
+  inputs-digest = "f9918f4cc4f84557100ced4ea6719a9a1b2ab91d466ad0396b2e82e67964fd9c"
   solver-name = "gps-cdcl"
   solver-version = 1

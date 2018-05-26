@@ -3,8 +3,10 @@ package server
 import (
 	"encoding/json"
 	"io"
+	"net/url"
 	"strings"
 
+	"github.com/dyninc/qstring"
 	"github.com/globalsign/mgo/bson"
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
@@ -24,22 +26,13 @@ func (app *App) playerRoutes() []Route {
 			app.playerCreate,
 		},
 		{
-			"playerGetByName",
+			"playerGet",
 			"GET",
-			"/store/playerGetByName",
+			"/store/playerGet",
 			true,
-			"John",
+			"?name=John, ?name=" + bson.NewObjectId(),
 			types.ExamplePlayer(),
-			app.playerGetByName,
-		},
-		{
-			"playerGetByID",
-			"GET",
-			"/store/playerGetByID",
-			true,
-			bson.NewObjectId(),
-			types.ExamplePlayer(),
-			app.playerGetByID,
+			app.playerGet,
 		},
 		{
 			"playerUpdate",
@@ -53,7 +46,7 @@ func (app *App) playerRoutes() []Route {
 	}
 }
 
-func (app *App) playerCreate(r io.Reader) (status types.Status, err error) {
+func (app *App) playerCreate(r io.Reader, query url.Values) (status types.Status, err error) {
 	var player types.Player
 	err = json.NewDecoder(r).Decode(&player)
 	if err != nil {
@@ -74,33 +67,38 @@ func (app *App) playerCreate(r io.Reader) (status types.Status, err error) {
 	return types.NewStatus(id, true, ""), err
 }
 
-func (app *App) playerGetByName(r io.Reader) (status types.Status, err error) {
-	var name string
-	err = json.NewDecoder(r).Decode(&name)
+type playerGetParams struct {
+	Name string
+	ID   string
+}
+
+func (app *App) playerGet(r io.Reader, query url.Values) (status types.Status, err error) {
+	params := playerGetParams{}
+	err = qstring.Unmarshal(query, &params)
 	if err != nil {
 		return
 	}
 
-	player, err := app.store.PlayerGetByName(name)
-	status = types.NewStatus(player, true, "")
-
-	return
-}
-
-func (app *App) playerGetByID(r io.Reader) (status types.Status, err error) {
-	var id bson.ObjectId
-	err = json.NewDecoder(r).Decode(&id)
-	if err != nil {
-		return
+	var player types.Player
+	if params.Name != "" {
+		player, err = app.store.PlayerGetByName(params.Name)
+	} else if params.ID != "" {
+		player, err = app.store.PlayerGetByID(bson.ObjectIdHex(params.ID))
+	} else {
+		status = types.NewStatus(nil, false, "must specify `name` or `id` query field")
 	}
 
-	player, err := app.store.PlayerGetByID(id)
-	status = types.NewStatus(player, true, "")
+	if err == nil {
+		status = types.NewStatus(player, true, "")
+	} else if err.Error() == "not found" {
+		err = nil
+		status = types.NewStatus(nil, false, "not found")
+	}
 
 	return
 }
 
-func (app *App) playerUpdate(r io.Reader) (status types.Status, err error) {
+func (app *App) playerUpdate(r io.Reader, query url.Values) (status types.Status, err error) {
 	var player types.Player
 	err = json.NewDecoder(r).Decode(&player)
 	if err != nil {

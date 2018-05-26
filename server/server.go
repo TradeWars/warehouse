@@ -21,8 +21,8 @@ type Config struct {
 	Bind      string `split_words:"true" required:"true"`
 	MongoHost string `split_words:"true" required:"true"`
 	MongoPort string `split_words:"true" required:"true"`
-	MongoName string `split_words:"true" required:"true"`
-	MongoUser string `split_words:"true" required:"true"`
+	MongoName string `split_words:"true" required:"false"`
+	MongoUser string `split_words:"true" required:"false"`
 	MongoPass string `split_words:"true" required:"false"`
 }
 

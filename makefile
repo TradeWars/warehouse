@@ -30,8 +30,6 @@ mongodb:
 		--name mongodb \
 		--publish 27017:27017 \
 		--detach \
-		-e MONGO_INITDB_ROOT_USERNAME=root \
-		-e MONGO_INITDB_ROOT_PASSWORD=root \
 		mongo
 	sleep 5
 	docker run \
@@ -39,8 +37,6 @@ mongodb:
 		--publish 8081:8081 \
 		--link mongodb:mongo \
 		--detach \
-		-e ME_CONFIG_MONGODB_ADMINUSERNAME=root \
-		-e ME_CONFIG_MONGODB_ADMINPASSWORD=root \
 		mongo-express
 
 

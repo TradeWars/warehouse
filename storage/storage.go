@@ -42,12 +42,14 @@ func New(config Config) (mgr *Manager, err error) {
 	if err != nil {
 		return
 	}
-	err = mgr.session.Login(&mgo.Credential{
-		Username: config.User,
-		Password: config.Pass,
-	})
-	if err != nil {
-		return
+	if config.User != "" {
+		err = mgr.session.Login(&mgo.Credential{
+			Username: config.User,
+			Password: config.Pass,
+		})
+		if err != nil {
+			return
+		}
 	}
 
 	mgr.db = mgr.session.DB("ss")

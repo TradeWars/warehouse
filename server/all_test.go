@@ -27,6 +27,7 @@ func TestMain(m *testing.M) {
 
 	client = resty.New().
 		SetRESTMode().
+		SetHeader("Authorization", "secret_key").
 		SetHostURL("http://" + config.Bind)
 
 	app, err = Initialise(config)

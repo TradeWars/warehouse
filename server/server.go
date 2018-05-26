@@ -19,6 +19,7 @@ import (
 // Config stores static configuration
 type Config struct {
 	Bind      string `split_words:"true" required:"true"`
+	Auth      string `split_words:"true" required:"true"`
 	MongoHost string `split_words:"true" required:"true"`
 	MongoPort string `split_words:"true" required:"true"`
 	MongoName string `split_words:"true" required:"false"`
@@ -72,17 +73,10 @@ func Initialise(config *Config) (app *App, err error) {
 			zap.Int("routes", len(routes)))
 
 		for _, route := range routes {
-			if route.Authenticated {
-				router.Methods(route.Method).
-					Path(route.Path).
-					Name(route.Name).
-					Handler(app.Authenticator(route.handler))
-			} else {
-				router.Methods(route.Method).
-					Path(route.Path).
-					Name(route.Name).
-					Handler(route.handler)
-			}
+			router.Methods(route.Method).
+				Path(route.Path).
+				Name(route.Name).
+				Handler(app.Authenticator(route.handler))
 
 			logger.Debug("registered handler route",
 				zap.String("name", route.Name),

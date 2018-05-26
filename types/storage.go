@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -20,7 +22,7 @@ type Storer interface {
 	// Report interface
 	ReportCreate(report Report) (id bson.ObjectId, err error)
 	ReportArchive(id bson.ObjectId, archived bool) (err error)
-	ReportGetList() (result []Report, err error)
+	ReportGetList(pageSize, page int32, archived, noRead bool, by, of string, from, to time.Time) (result []Report, err error)
 	ReportGet(id bson.ObjectId) (result Report, err error)
 
 	// misc

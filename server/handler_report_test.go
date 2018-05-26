@@ -134,7 +134,62 @@ func Test_reportArchive(t *testing.T) {
 }
 
 func Test_reportGetList(t *testing.T) {
+	tests := []struct {
+		name        string
+		body        map[string]string
+		wantStatus  types.Status
+		wantReports []types.Report
+	}{
+		{"v archive 1", map[string]string{
+			"archived": "true",
+		}, types.Status{
+			Success: true,
+		}, []types.Report{
+			types.Report{
+				ID:       reportIDs["John"],
+				Name:     "John",
+				Reason:   "Hacking",
+				By:       playerIDs["Alice"],
+				Date:     timeTruth,
+				Read:     &[]bool{false}[0],
+				Type:     "AC",
+				Position: types.Geo{PosX: 20.0, PosY: 55.0, PosZ: 12.0},
+				Metadata: "135h",
+				Archived: &[]bool{true}[0],
+			},
+			types.Report{
+				ID:       reportIDs["Steve"],
+				Name:     "Steve",
+				Reason:   "Ban evasion",
+				By:       playerIDs["Alice"],
+				Date:     timeTruth.Add(-time.Hour),
+				Read:     &[]bool{true}[0],
+				Type:     "PLY",
+				Position: types.Geo{},
+				Metadata: "",
+				Archived: &[]bool{true}[0],
+			},
+		}},
+	}
+	for _, tt := range tests {
+		var status types.Status
+		resp, err := client.R().
+			SetQueryParams(tt.body).
+			SetResult(&status).
+			Get("/store/reportGetList")
+		if err != nil {
+			t.Error(err)
+			return
+		}
 
+		assert.Equal(t, 200, resp.StatusCode())
+
+		var reports []types.Report
+		b, _ := json.Marshal(status.Result)
+		assert.NoError(t, json.Unmarshal(b, &reports))
+
+		assert.Equal(t, tt.wantReports, reports)
+	}
 }
 
 func Test_reportGet(t *testing.T) {

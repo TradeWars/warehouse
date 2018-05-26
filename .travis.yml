@@ -10,3 +10,5 @@ before_script:
         pwd:"root",
         roles:["readWrite"]
       });'
+script:
+  - go test -v -race ./server

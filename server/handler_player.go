@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/url"
 	"strings"
@@ -22,7 +23,7 @@ func (app *App) playerRoutes() []Route {
 			"/store/playerCreate",
 			true,
 			types.ExamplePlayer(),
-			types.ExampleStatus(true, true),
+			types.ExampleStatus(bson.NewObjectId(), true),
 			app.playerCreate,
 		},
 		{
@@ -40,7 +41,7 @@ func (app *App) playerRoutes() []Route {
 			"/store/playerUpdate",
 			true,
 			types.ExamplePlayer(),
-			types.ExampleStatus(true, true),
+			types.ExampleStatus(nil, true),
 			app.playerUpdate,
 		},
 	}
@@ -79,10 +80,14 @@ func (app *App) playerGet(r io.Reader, query url.Values) (status types.Status, e
 		return
 	}
 
+	logger.Debug("received request playerGet",
+		zap.Any("params", params))
+
 	var player types.Player
 	if params.Name != "" {
 		player, err = app.store.PlayerGetByName(params.Name)
 	} else if params.ID != "" {
+		fmt.Println("params.ID", params.ID)
 		player, err = app.store.PlayerGetByID(bson.ObjectIdHex(params.ID))
 	} else {
 		status = types.NewStatus(nil, false, "must specify `name` or `id` query field")
@@ -108,6 +113,9 @@ func (app *App) playerUpdate(r io.Reader, query url.Values) (status types.Status
 	if err != nil {
 		return types.NewStatusValidationError(err.(validator.ValidationErrors)), nil
 	}
+
+	logger.Debug("received request playerUpdate",
+		zap.Any("player", player))
 
 	return types.NewStatus(nil, true, ""), app.store.PlayerUpdate(player.ID, player)
 }

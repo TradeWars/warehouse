@@ -175,10 +175,68 @@ func Test_playerGetByName(t *testing.T) {
 	}
 }
 
-func Test_playerGetByID(t *testing.T) {
-
-}
-
 func Test_playerUpdate(t *testing.T) {
+	tests := []struct {
+		name       string
+		body       types.Player
+		wantStatus types.Status
+	}{
+		{"v update 1 John", types.Player{
+			ID:           playerIDs["John"],
+			Name:         "John",
+			Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+			Ipv4:         1544996175,
+			Alive:        &[]bool{true}[0],
+			Registration: timeTruth,
+			LastLogin:    timeTruth.Add(time.Hour),
+			TotalSpawns:  &[]int32{0}[0],
+			Warnings:     &[]int32{0}[0],
+			Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		}, types.Status{
+			Success: true,
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var status types.Status
 
+			resp, err := client.R().
+				SetBody(tt.body).
+				SetResult(&status).
+				Patch("/store/playerUpdate")
+
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			assert.Equal(t, 200, resp.StatusCode())
+
+			if status.Success {
+				assert.Equal(t, tt.wantStatus.Success, true)
+				assert.Empty(t, status.Result)
+				assert.Empty(t, status.Message)
+
+				resp, err := client.R().
+					SetQueryParam("id", tt.body.ID.Hex()).
+					SetResult(&status).
+					Get("/store/playerGet")
+				if err != nil {
+					t.Error(err)
+					return
+				}
+				assert.Equal(t, 200, resp.StatusCode())
+				assert.Equal(t, status.Success, true)
+
+				var gotPlayer types.Player
+				b, _ := json.Marshal(status.Result)
+				assert.NoError(t, json.Unmarshal(b, &gotPlayer))
+				assert.Equal(t, tt.body, gotPlayer)
+			} else {
+				assert.Equal(t, tt.wantStatus.Success, false)
+				assert.Equal(t, tt.wantStatus.Message, status.Message)
+				assert.Equal(t, tt.wantStatus.Result, status.Result)
+			}
+		})
+	}
 }

@@ -8,7 +8,7 @@ import (
 
 // Player represents a player in the game and all their data
 type Player struct {
-	ID           bson.ObjectId `validate:"omitempty,required,len=12" json:"_id" bson:"_id"`
+	ID           bson.ObjectId `validate:"omitempty,required" json:"_id" bson:"_id"`
 	Name         string        `validate:"required,max=24" json:"name" bson:"name"`
 	Pass         string        `validate:"required,len=128" json:"pass" bson:"pass"`
 	Ipv4         uint32        `validate:"required" json:"ipv4" bson:"ipv4"`

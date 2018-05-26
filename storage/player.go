@@ -41,7 +41,7 @@ func (mgr *Manager) PlayerGetByID(id bson.ObjectId) (player types.Player, err er
 
 // PlayerUpdate updates a player in the database by their ID
 func (mgr *Manager) PlayerUpdate(id bson.ObjectId, player types.Player) (err error) {
-	return mgr.players.Update(bson.M{"_id": id}, player)
+	return mgr.players.Update(bson.M{"_id": id}, bson.M{"$set": player})
 }
 
 // PlayerRemove removes a player in the database by their ID

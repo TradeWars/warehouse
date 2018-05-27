@@ -26,28 +26,37 @@ func (mgr *Manager) ReportArchive(id bson.ObjectId, archived bool) (err error) {
 }
 
 // ReportGetList returns a list of reports based on search parameters
-func (mgr *Manager) ReportGetList(pageSize, page int, archived, noRead bool, by, of string, from, to *time.Time) (result []types.Report, err error) {
+func (mgr *Manager) ReportGetList(pageSize, page int, archived, noRead bool, by, of bson.ObjectId, from, to *time.Time) (result []types.Report, err error) {
+	var and []bson.M
+
+	if archived {
+		and = append(and, bson.M{"archived": true})
+	} else {
+		and = append(and, bson.M{"archived": false})
+	}
+	if noRead {
+		and = append(and, bson.M{"read": false})
+	}
+	if by != "" {
+		and = append(and, bson.M{"by_player_id": by})
+	}
+	if of != "" {
+		and = append(and, bson.M{"of_player_id": of})
+	}
+	if from != nil {
+		and = append(and, bson.M{"date": bson.M{"$gte": *from}})
+	}
+	if to != nil {
+		and = append(and, bson.M{"date": bson.M{"$lte": *to}})
+	}
+
 	query := bson.M{}
 
-	// todo
-	// if archived {
-	// 	query["archived"] = true
-	// }
-	// if noRead {
-	// 	query["read"] = false
-	// }
-	// if by != "" {
-	// 	query["by"] = by
-	// }
-	// if of != "" {
-	// 	query["name"] = of
-	// }
-	// if from != nil {
-	// 	//
-	// }
-	// if to != nil {
-	// 	//
-	// }
+	if len(and) == 1 {
+		query = and[0]
+	} else if len(and) > 1 {
+		query = bson.M{"$and": and}
+	}
 
 	if pageSize > 0 {
 		err = mgr.reports.Find(query).Skip(pageSize * page).Limit(pageSize).All(&result)

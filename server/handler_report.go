@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/url"
+	"time"
 
 	"github.com/dyninc/qstring"
 	"github.com/globalsign/mgo/bson"
@@ -86,8 +87,45 @@ func (app *App) reportArchive(r io.Reader, query url.Values) (status types.Statu
 	return types.NewStatus(nil, true, ""), app.store.ReportArchive(bson.ObjectIdHex(params.ID), params.Archive)
 }
 
+type reportGetListParams struct {
+	PageSize, Page   int
+	Archived, NoRead bool
+	By, Of           string
+	From, To         time.Time
+}
+
 func (app *App) reportGetList(r io.Reader, query url.Values) (status types.Status, err error) {
-	list, err := app.store.ReportGetList()
+	params := reportGetListParams{}
+	err = qstring.Unmarshal(query, &params)
+	if err != nil {
+		return
+	}
+
+	logger.Debug("received request reportGetList",
+		zap.Any("params", params))
+
+	var byID, ofID bson.ObjectId
+	if bson.IsObjectIdHex(params.By) {
+		byID = bson.ObjectIdHex(params.By)
+	}
+	if bson.IsObjectIdHex(params.Of) {
+		ofID = bson.ObjectIdHex(params.Of)
+	}
+
+	var from, to *time.Time
+	if !params.From.Equal(time.Time{}) {
+		from = &params.From
+	}
+	if !params.To.Equal(time.Time{}) {
+		to = &params.To
+	}
+
+	list, err := app.store.ReportGetList(
+		params.PageSize, params.Page,
+		params.Archived, params.NoRead,
+		byID, ofID,
+		from, to,
+	)
 	return types.NewStatus(list, true, ""), err
 }
 

@@ -11,7 +11,7 @@ import (
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
-var reportIDs = make(map[string]bson.ObjectId)
+var reportIDs = make(map[bson.ObjectId]bson.ObjectId)
 
 func Test_reportCreate(t *testing.T) {
 	tests := []struct {
@@ -20,7 +20,7 @@ func Test_reportCreate(t *testing.T) {
 		wantStatus types.Status
 	}{
 		{"v create 1", types.Report{
-			Name:     "John",
+			Of:       playerIDs["John"],
 			Reason:   "Hacking",
 			By:       playerIDs["Alice"],
 			Date:     timeTruth,
@@ -33,15 +33,41 @@ func Test_reportCreate(t *testing.T) {
 			Success: true,
 		}},
 		{"v create 2", types.Report{
-			Name:     "Steve",
+			Of:       playerIDs["Steve"],
 			Reason:   "Ban evasion",
-			By:       playerIDs["Alice"],
+			By:       playerIDs["John"],
 			Date:     timeTruth.Add(-time.Hour),
 			Read:     &[]bool{true}[0],
 			Type:     "PLY",
 			Position: types.Geo{},
 			Metadata: "",
 			Archived: &[]bool{true}[0],
+		}, types.Status{
+			Success: true,
+		}},
+		{"v create 1", types.Report{
+			Of:       playerIDs["Bob"],
+			Reason:   "Cheating",
+			By:       playerIDs["Steve"],
+			Date:     timeTruth.Add(time.Hour * 2),
+			Read:     &[]bool{false}[0],
+			Type:     "AC",
+			Position: types.Geo{PosX: 20.0, PosY: 55.0, PosZ: 12.0},
+			Metadata: "135h",
+			Archived: &[]bool{false}[0],
+		}, types.Status{
+			Success: true,
+		}},
+		{"v create 2", types.Report{
+			Of:       playerIDs["Anne"],
+			Reason:   "Jetpack",
+			By:       playerIDs["Alice"],
+			Date:     timeTruth.Add(time.Hour),
+			Read:     &[]bool{false}[0],
+			Type:     "PLY",
+			Position: types.Geo{},
+			Metadata: "",
+			Archived: &[]bool{false}[0],
 		}, types.Status{
 			Success: true,
 		}},
@@ -67,7 +93,7 @@ func Test_reportCreate(t *testing.T) {
 				assert.Len(t, status.Result, 24)
 				assert.Empty(t, status.Message)
 
-				reportIDs[tt.body.Name] = bson.ObjectIdHex(status.Result.(string))
+				reportIDs[tt.body.Of] = bson.ObjectIdHex(status.Result.(string))
 			} else {
 				assert.Equal(t, tt.wantStatus.Success, false)
 				assert.Equal(t, tt.wantStatus.Message, status.Message)
@@ -83,7 +109,7 @@ func Test_reportArchive(t *testing.T) {
 		body       bson.ObjectId
 		wantStatus types.Status
 	}{
-		{"v archive 1", reportIDs["John"], types.Status{
+		{"v archive 1", reportIDs[playerIDs["John"]], types.Status{
 			Success: true,
 		}},
 	}
@@ -140,14 +166,42 @@ func Test_reportGetList(t *testing.T) {
 		wantStatus  types.Status
 		wantReports []types.Report
 	}{
-		{"v archive 1", map[string]string{
+		{"v list all", map[string]string{}, types.Status{
+			Success: true,
+		}, []types.Report{
+			types.Report{
+				ID:       reportIDs[playerIDs["Bob"]],
+				Of:       playerIDs["Bob"],
+				Reason:   "Cheating",
+				By:       playerIDs["Steve"],
+				Date:     timeTruth.Add(time.Hour * 2),
+				Read:     &[]bool{false}[0],
+				Type:     "AC",
+				Position: types.Geo{PosX: 20.0, PosY: 55.0, PosZ: 12.0},
+				Metadata: "135h",
+				Archived: &[]bool{false}[0],
+			},
+			types.Report{
+				ID:       reportIDs[playerIDs["Anne"]],
+				Of:       playerIDs["Anne"],
+				Reason:   "Jetpack",
+				By:       playerIDs["Alice"],
+				Date:     timeTruth.Add(time.Hour),
+				Read:     &[]bool{false}[0],
+				Type:     "PLY",
+				Position: types.Geo{},
+				Metadata: "",
+				Archived: &[]bool{false}[0],
+			},
+		}},
+		{"v list archived", map[string]string{
 			"archived": "true",
 		}, types.Status{
 			Success: true,
 		}, []types.Report{
 			types.Report{
-				ID:       reportIDs["John"],
-				Name:     "John",
+				ID:       reportIDs[playerIDs["John"]],
+				Of:       playerIDs["John"],
 				Reason:   "Hacking",
 				By:       playerIDs["Alice"],
 				Date:     timeTruth,
@@ -158,10 +212,10 @@ func Test_reportGetList(t *testing.T) {
 				Archived: &[]bool{true}[0],
 			},
 			types.Report{
-				ID:       reportIDs["Steve"],
-				Name:     "Steve",
+				ID:       reportIDs[playerIDs["Steve"]],
+				Of:       playerIDs["Steve"],
 				Reason:   "Ban evasion",
-				By:       playerIDs["Alice"],
+				By:       playerIDs["John"],
 				Date:     timeTruth.Add(-time.Hour),
 				Read:     &[]bool{true}[0],
 				Type:     "PLY",
@@ -170,25 +224,63 @@ func Test_reportGetList(t *testing.T) {
 				Archived: &[]bool{true}[0],
 			},
 		}},
+		{"v list Steve", map[string]string{
+			"by": playerIDs["Steve"].Hex(),
+		}, types.Status{
+			Success: true,
+		}, []types.Report{
+			types.Report{
+				ID:       reportIDs[playerIDs["Bob"]],
+				Of:       playerIDs["Bob"],
+				Reason:   "Cheating",
+				By:       playerIDs["Steve"],
+				Date:     timeTruth.Add(time.Hour * 2),
+				Read:     &[]bool{false}[0],
+				Type:     "AC",
+				Position: types.Geo{PosX: 20.0, PosY: 55.0, PosZ: 12.0},
+				Metadata: "135h",
+				Archived: &[]bool{false}[0],
+			},
+		}},
+		// {"v list fromto", map[string]string{
+		// 	"to": timeTruth.Add(time.Hour).Format(time.RFC3339),
+		// }, types.Status{
+		// 	Success: true,
+		// }, []types.Report{
+		// 	types.Report{
+		// 		ID:       reportIDs[playerIDs["Anne"]],
+		// 		Of:       playerIDs["Anne"],
+		// 		Reason:   "Ban evasion",
+		// 		By:       playerIDs["Alice"],
+		// 		Date:     timeTruth.Add(time.Hour),
+		// 		Read:     &[]bool{false}[0],
+		// 		Type:     "PLY",
+		// 		Position: types.Geo{},
+		// 		Metadata: "",
+		// 		Archived: &[]bool{false}[0],
+		// 	},
+		// }},
 	}
 	for _, tt := range tests {
-		var status types.Status
-		resp, err := client.R().
-			SetQueryParams(tt.body).
-			SetResult(&status).
-			Get("/store/reportGetList")
-		if err != nil {
-			t.Error(err)
-			return
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			var status types.Status
+			resp, err := client.R().
+				SetQueryParams(tt.body).
+				SetResult(&status).
+				Get("/store/reportGetList")
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-		assert.Equal(t, 200, resp.StatusCode())
+			assert.Equal(t, 200, resp.StatusCode())
 
-		var reports []types.Report
-		b, _ := json.Marshal(status.Result)
-		assert.NoError(t, json.Unmarshal(b, &reports))
+			var reports []types.Report
+			b, _ := json.Marshal(status.Result)
+			assert.NoError(t, json.Unmarshal(b, &reports))
 
-		assert.Equal(t, tt.wantReports, reports)
+			assert.Equal(t, tt.wantReports, reports)
+		})
 	}
 }
 

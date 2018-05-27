@@ -9,9 +9,9 @@ import (
 // Report represents a behaviour report made against a player
 type Report struct {
 	ID       bson.ObjectId `validate:"omitempty,required" json:"_id,omitempty" bson:"_id,omitempty"`
-	Name     string        `validate:"required" json:"name" bson:"name"`
+	Of       bson.ObjectId `validate:"required,len=12" json:"of_player_id" bson:"of_player_id"`
 	Reason   string        `validate:"required" json:"reason" bson:"reason"`
-	By       bson.ObjectId `validate:"omitempty,len=12" json:"by,omitempty" bson:"by,omitempty"`
+	By       bson.ObjectId `validate:"omitempty,len=12" json:"by_player_id,omitempty" bson:"by_player_id,omitempty"`
 	Date     time.Time     `validate:"required" json:"date" bson:"date"`
 	Read     *bool         `validate:"required" json:"read" bson:"read"`
 	Type     string        `validate:"required" json:"type" bson:"type"`
@@ -25,9 +25,9 @@ func ExampleReport() Report {
 	f := false
 	return Report{
 		ID:       bson.NewObjectId(),
-		Name:     "John",
+		Of:       bson.NewObjectId(),
 		Reason:   "Health hack",
-		By:       "Alice",
+		By:       bson.NewObjectId(),
 		Date:     time.Now().Add(-time.Hour),
 		Read:     &f,
 		Type:     "AC",

@@ -242,24 +242,36 @@ func Test_reportGetList(t *testing.T) {
 				Archived: &[]bool{false}[0],
 			},
 		}},
-		// {"v list fromto", map[string]string{
-		// 	"to": timeTruth.Add(time.Hour).Format(time.RFC3339),
-		// }, types.Status{
-		// 	Success: true,
-		// }, []types.Report{
-		// 	types.Report{
-		// 		ID:       reportIDs[playerIDs["Anne"]],
-		// 		Of:       playerIDs["Anne"],
-		// 		Reason:   "Ban evasion",
-		// 		By:       playerIDs["Alice"],
-		// 		Date:     timeTruth.Add(time.Hour),
-		// 		Read:     &[]bool{false}[0],
-		// 		Type:     "PLY",
-		// 		Position: types.Geo{},
-		// 		Metadata: "",
-		// 		Archived: &[]bool{false}[0],
-		// 	},
-		// }},
+		{"v list fromto", map[string]string{
+			"to": timeTruth.Add(time.Hour).Format(time.RFC3339),
+		}, types.Status{
+			Success: true,
+		}, []types.Report{
+			types.Report{
+				ID:       reportIDs[playerIDs["Bob"]],
+				Of:       playerIDs["Bob"],
+				Reason:   "Cheating",
+				By:       playerIDs["Steve"],
+				Date:     timeTruth.Add(time.Hour * 2),
+				Read:     &[]bool{false}[0],
+				Type:     "AC",
+				Position: types.Geo{PosX: 20.0, PosY: 55.0, PosZ: 12.0},
+				Metadata: "135h",
+				Archived: &[]bool{false}[0],
+			},
+			types.Report{
+				ID:       reportIDs[playerIDs["Anne"]],
+				Of:       playerIDs["Anne"],
+				Reason:   "Jetpack",
+				By:       playerIDs["Alice"],
+				Date:     timeTruth.Add(time.Hour),
+				Read:     &[]bool{false}[0],
+				Type:     "PLY",
+				Position: types.Geo{},
+				Metadata: "",
+				Archived: &[]bool{false}[0],
+			},
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

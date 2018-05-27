@@ -44,10 +44,10 @@ func (mgr *Manager) ReportGetList(pageSize, page int, archived, noRead bool, by,
 		and = append(and, bson.M{"of_player_id": of})
 	}
 	if from != nil {
-		and = append(and, bson.M{"date": bson.M{"$gte": *from}})
+		and = append(and, bson.M{"_id": bson.M{"$gte": bson.NewObjectIdWithTime(*from)}})
 	}
 	if to != nil {
-		and = append(and, bson.M{"date": bson.M{"$lte": *to}})
+		and = append(and, bson.M{"_id": bson.M{"$lte": bson.NewObjectIdWithTime(*to)}})
 	}
 
 	query := bson.M{}

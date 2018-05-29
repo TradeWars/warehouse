@@ -44,7 +44,7 @@ func (app *App) reportRoutes() []Route {
 			"reportGet",
 			"GET",
 			"/store/reportGet",
-			"?id=" + bson.NewObjectId(),
+			"id",
 			types.ExampleReport(),
 			app.reportGet,
 		},

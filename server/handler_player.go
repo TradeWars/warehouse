@@ -87,7 +87,7 @@ func (app *App) playerGet(r io.Reader, query url.Values) (status types.Status, e
 		fmt.Println("params.ID", params.ID)
 		player, err = app.store.PlayerGetByID(bson.ObjectIdHex(params.ID))
 	} else {
-		status = types.NewStatus(nil, false, "must specify `name` or `id` query field")
+		status = types.NewStatus(nil, false, "id or name not specified")
 	}
 
 	if err == nil {

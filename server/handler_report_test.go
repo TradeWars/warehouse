@@ -297,5 +297,66 @@ func Test_reportGetList(t *testing.T) {
 }
 
 func Test_reportGet(t *testing.T) {
+	tests := []struct {
+		name       string
+		body       bson.ObjectId
+		wantStatus types.Status
+	}{
+		{"v get 1", reportIDs[playerIDs["Bob"]], types.Status{
+			Result: types.Report{
+				ID:       reportIDs[playerIDs["Bob"]],
+				Of:       playerIDs["Bob"],
+				Reason:   "Cheating",
+				By:       playerIDs["Steve"],
+				Date:     timeTruth.Add(time.Hour * 2),
+				Read:     &[]bool{false}[0],
+				Type:     "AC",
+				Position: types.Geo{PosX: 20.0, PosY: 55.0, PosZ: 12.0},
+				Metadata: "135h",
+				Archived: &[]bool{false}[0],
+			},
+			Success: true,
+		}},
+		{"v get 2", reportIDs[playerIDs["John"]], types.Status{
+			Result: types.Report{
+				ID:       reportIDs[playerIDs["John"]],
+				Of:       playerIDs["John"],
+				Reason:   "Hacking",
+				By:       playerIDs["Alice"],
+				Date:     timeTruth,
+				Read:     &[]bool{false}[0],
+				Type:     "AC",
+				Position: types.Geo{PosX: 20.0, PosY: 55.0, PosZ: 12.0},
+				Metadata: "135h",
+				Archived: &[]bool{true}[0],
+			},
+			Success: true,
+		}},
+		{"i get none", "", types.Status{
+			Success: false,
+			Message: "not found",
+		}},
+	}
+	for _, tt := range tests {
+		var status types.Status
+		resp, err := client.R().
+			SetResult(&status).
+			Get("/store/reportGet?id=" + tt.body.Hex())
+		if err != nil {
+			t.Error(err)
+			return
+		}
 
+		assert.Equal(t, 200, resp.StatusCode())
+
+		assert.Equal(t, tt.wantStatus.Success, status.Success)
+
+		if status.Success {
+			var report types.Report
+			b, _ := json.Marshal(status.Result)
+			assert.NoError(t, json.Unmarshal(b, &report))
+
+			assert.Equal(t, tt.wantStatus.Result, report)
+		}
+	}
 }

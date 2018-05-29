@@ -140,6 +140,11 @@ func (app *App) reportGet(r io.Reader, query url.Values) (status types.Status, e
 		return
 	}
 
+	if !bson.IsObjectIdHex(params.ID) {
+		status = types.NewStatus(nil, false, "id not specified")
+		return
+	}
+
 	logger.Debug("received request reportGet",
 		zap.Any("params", params))
 

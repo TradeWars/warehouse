@@ -13,7 +13,7 @@ import (
 type Status struct {
 	Result  interface{} `json:"result"`
 	Success bool        `json:"success"`
-	Message string      `json:"error,omitempty"`
+	Message string      `json:"message,omitempty"`
 }
 
 // NewStatus creates and returns a Status

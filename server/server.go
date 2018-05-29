@@ -48,6 +48,7 @@ func Initialise(config *Config) (app *App, err error) {
 		validator: validator.New(),
 	}
 	app.handlers = map[string][]Route{
+		"index":  app.indexRoutes(),
 		"player": app.playerRoutes(),
 		"admin":  app.adminRoutes(),
 		"report": app.reportRoutes(),

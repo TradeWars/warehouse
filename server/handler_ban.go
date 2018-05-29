@@ -3,6 +3,9 @@ package server
 import (
 	"io"
 	"net/url"
+	"time"
+
+	"github.com/globalsign/mgo/bson"
 
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
@@ -10,43 +13,43 @@ import (
 func (app App) banRoutes() []Route {
 	return []Route{
 		{
-			"BanIO_Create",
+			"banCreate",
 			"POST",
-			"/ban",
-			nil,
-			nil,
+			"/store/banCreate",
+			types.ExampleBan(),
+			types.ExampleStatus(bson.NewObjectId(), true),
 			app.banCreate,
 		},
 		{
-			"BanIO_Remove",
-			"DELETE",
-			"/ban",
-			nil,
-			nil,
-			app.banRemove,
+			"banArchive",
+			"PATCH",
+			"/store/banArchive",
+			"id, archive",
+			types.ExampleStatus(nil, true),
+			app.banArchive,
 		},
 		{
-			"BanIO_Update",
+			"banUpdate",
 			"PATCH",
-			"/ban",
-			nil,
-			nil,
+			"/store/banUpdate",
+			"id, archive",
+			types.ExampleStatus(nil, true),
 			app.banUpdate,
 		},
 		{
-			"BanIO_GetList",
+			"banGetList",
 			"GET",
-			"/bans",
-			nil,
-			nil,
+			"/store/banGetList",
+			"pagesize, page, archived, by, of, from, to",
+			[]types.Ban{types.ExampleBan(), types.ExampleBan()},
 			app.banGetList,
 		},
 		{
-			"BanIO_GetInfo",
+			"banGetInfo",
 			"GET",
-			"/ban",
-			nil,
-			nil,
+			"/store/banGetInfo",
+			"id",
+			types.ExampleBan(),
 			app.banGetInfo,
 		},
 	}
@@ -56,12 +59,24 @@ func (app App) banCreate(r io.Reader, query url.Values) (status types.Status, er
 	return
 }
 
-func (app App) banRemove(r io.Reader, query url.Values) (status types.Status, err error) {
+type banArchiveParams struct {
+	ID      string
+	Archive bool
+}
+
+func (app App) banArchive(r io.Reader, query url.Values) (status types.Status, err error) {
 	return
 }
 
 func (app App) banUpdate(r io.Reader, query url.Values) (status types.Status, err error) {
 	return
+}
+
+type banGetListParams struct {
+	PageSize, Page int
+	Archived       bool
+	By, Of         string
+	From, To       time.Time
 }
 
 func (app App) banGetList(r io.Reader, query url.Values) (status types.Status, err error) {

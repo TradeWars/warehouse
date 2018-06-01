@@ -19,6 +19,7 @@ type Ban struct {
 	Archived bool          `validate:"required" json:"archived" bson:"archived"`
 }
 
+// ExampleBan returns an example object of a ban record
 func ExampleBan() Ban {
 	return Ban{
 		ID:       bson.NewObjectId(),

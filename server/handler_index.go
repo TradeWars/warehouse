@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"io"
 	"net/url"
 
@@ -21,5 +22,5 @@ func (app *App) indexRoutes() []Route {
 }
 
 func (app *App) index(r io.Reader, query url.Values) (status types.Status, err error) {
-	return types.NewStatus(app.handlers, true, "good luck out there survivors!"), nil
+	return types.NewStatus(app.handlers, true, fmt.Sprintf("ssc version: %s, good luck out there survivors!", version)), nil
 }

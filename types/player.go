@@ -11,7 +11,7 @@ type Player struct {
 	ID           bson.ObjectId `validate:"omitempty,required" json:"_id" bson:"_id"`
 	Name         string        `validate:"required,max=24" json:"name" bson:"name"`
 	Pass         string        `validate:"required,len=128" json:"pass" bson:"pass"`
-	Ipv4         uint32        `validate:"required" json:"ipv4" bson:"ipv4"`
+	Ipv4         string        `validate:"required" json:"ipv4" bson:"ipv4"`
 	Alive        *bool         `validate:"required" json:"alive" bson:"alive"`
 	Registration time.Time     `validate:"required" json:"regdate" bson:"regdate"`
 	LastLogin    time.Time     `validate:"required" json:"lastlog" bson:"lastlog"`
@@ -29,7 +29,7 @@ func ExamplePlayer() Player {
 		ID:           bson.NewObjectId(),
 		Name:         "John",
 		Pass:         "[whirlpool hash of password]",
-		Ipv4:         1544996175,
+		Ipv4:         "191.24.25.16",
 		Alive:        &alive,
 		Registration: time.Now().Add(-time.Hour * 24),
 		LastLogin:    time.Now().Add(-time.Hour * 6),

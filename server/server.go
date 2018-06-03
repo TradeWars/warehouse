@@ -16,6 +16,8 @@ import (
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
+var version string
+
 // Config stores static configuration
 type Config struct {
 	Bind      string `split_words:"true" required:"true"`
@@ -41,7 +43,9 @@ type App struct {
 // Initialise performs all the necessary actions to bootstrap the application
 // into a runnable state ready for starting with app.Start
 func Initialise(config *Config) (app *App, err error) {
-	logger.Debug("initialising ssc-server with debug logging", zap.Any("config", config))
+	logger.Debug("initialising ssc-server with debug logging",
+		zap.String("version", version),
+		zap.Any("config", config))
 
 	app = &App{
 		config:    config,

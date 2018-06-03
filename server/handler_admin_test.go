@@ -23,7 +23,7 @@ func TestPre_admin(t *testing.T) {
 	adminPlayerID1, err = app.store.PlayerCreate(types.Player{
 		Name:         "adminPlayerID1",
 		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-		Ipv4:         1544996175,
+		Ipv4:         "92.22.197.79",
 		Alive:        &[]bool{true}[0],
 		Registration: time.Now(),
 		LastLogin:    time.Now(),
@@ -35,7 +35,7 @@ func TestPre_admin(t *testing.T) {
 	adminPlayerID2, err = app.store.PlayerCreate(types.Player{
 		Name:         "adminPlayerID2",
 		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-		Ipv4:         1544996175,
+		Ipv4:         "92.22.197.79",
 		Alive:        &[]bool{true}[0],
 		Registration: time.Now(),
 		LastLogin:    time.Now(),
@@ -47,7 +47,7 @@ func TestPre_admin(t *testing.T) {
 	adminPlayerID3, err = app.store.PlayerCreate(types.Player{
 		Name:         "adminPlayerID3",
 		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-		Ipv4:         1544996175,
+		Ipv4:         "92.22.197.79",
 		Alive:        &[]bool{true}[0],
 		Registration: time.Now(),
 		LastLogin:    time.Now(),

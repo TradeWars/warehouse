@@ -25,7 +25,7 @@ func Test_playerCreate(t *testing.T) {
 		{"v create 1", types.Player{
 			Name:         "John",
 			Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         1544996175,
+			Ipv4:         "92.22.197.79",
 			Alive:        &[]bool{true}[0],
 			Registration: timeTruth.Add(time.Hour),
 			LastLogin:    timeTruth.Add(time.Hour),
@@ -39,7 +39,7 @@ func Test_playerCreate(t *testing.T) {
 		{"v create 2", types.Player{
 			Name:         "Alice",
 			Pass:         "84dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         2544996175,
+			Ipv4:         "165.22.197.79",
 			Alive:        &[]bool{true}[0],
 			Registration: timeTruth.Add(time.Hour * 2),
 			LastLogin:    timeTruth.Add(time.Hour * 2),
@@ -53,7 +53,7 @@ func Test_playerCreate(t *testing.T) {
 		{"v create 3", types.Player{
 			Name:         "Steve",
 			Pass:         "94dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         3544996175,
+			Ipv4:         "192.22.197.79",
 			Alive:        &[]bool{true}[0],
 			Registration: timeTruth.Add(time.Hour * 3),
 			LastLogin:    timeTruth.Add(time.Hour * 3),
@@ -67,7 +67,7 @@ func Test_playerCreate(t *testing.T) {
 		{"v create 4", types.Player{
 			Name:         "Bob",
 			Pass:         "14dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         4044996175,
+			Ipv4:         "212.22.197.79",
 			Alive:        &[]bool{true}[0],
 			Registration: timeTruth.Add(time.Hour * 4),
 			LastLogin:    timeTruth.Add(time.Hour * 4),
@@ -81,7 +81,7 @@ func Test_playerCreate(t *testing.T) {
 		{"v create 5", types.Player{
 			Name:         "Anne",
 			Pass:         "24dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         1544996175,
+			Ipv4:         "92.22.197.79",
 			Alive:        &[]bool{true}[0],
 			Registration: timeTruth.Add(time.Hour * 5),
 			LastLogin:    timeTruth.Add(time.Hour * 5),
@@ -95,7 +95,7 @@ func Test_playerCreate(t *testing.T) {
 		{"i create dup", types.Player{
 			Name:         "Alice",
 			Pass:         "94dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         3544996175,
+			Ipv4:         "165.22.197.79",
 			Alive:        &[]bool{true}[0],
 			Registration: timeTruth,
 			LastLogin:    timeTruth,
@@ -148,7 +148,7 @@ func Test_playerGetByName(t *testing.T) {
 			Result: types.Player{
 				Name:         "John",
 				Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-				Ipv4:         1544996175,
+				Ipv4:         "92.22.197.79",
 				Alive:        &[]bool{true}[0],
 				Registration: timeTruth.Add(time.Hour * 1),
 				LastLogin:    timeTruth.Add(time.Hour * 1),
@@ -162,7 +162,7 @@ func Test_playerGetByName(t *testing.T) {
 			Result: types.Player{
 				Name:         "Alice",
 				Pass:         "84dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-				Ipv4:         2544996175,
+				Ipv4:         "165.22.197.79",
 				Alive:        &[]bool{true}[0],
 				Registration: timeTruth.Add(time.Hour * 2),
 				LastLogin:    timeTruth.Add(time.Hour * 2),
@@ -227,7 +227,7 @@ func Test_playerUpdate(t *testing.T) {
 			ID:           playerIDs["John"],
 			Name:         "John",
 			Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         1544996175,
+			Ipv4:         "92.22.197.79",
 			Alive:        &[]bool{true}[0],
 			Registration: timeTruth,
 			LastLogin:    timeTruth.Add(time.Hour),

@@ -1,5 +1,5 @@
 VERSION := $(shell date +%Y-%m-%dT%H-%M-%S)
-LDFLAGS := -ldflags "-X main.version=$(VERSION)"
+LDFLAGS := -ldflags "-X server.version=$(VERSION)"
 -include .env
 
 

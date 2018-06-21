@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/globalsign/mgo/bson"
 	"github.com/stretchr/testify/assert"
@@ -21,39 +20,30 @@ var (
 func TestPre_admin(t *testing.T) {
 	var err error
 	adminPlayerID1, err = app.store.PlayerCreate(types.Player{
-		Name:         "adminPlayerID1",
-		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-		Ipv4:         "92.22.197.79",
-		Alive:        &[]bool{true}[0],
-		Registration: time.Now(),
-		LastLogin:    time.Now(),
-		TotalSpawns:  &[]int32{0}[0],
-		Warnings:     &[]int32{0}[0],
-		Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		Account: types.Account{
+			Name: "adminPlayerID1",
+			Pass: "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+			Ipv4: "92.22.197.79",
+			Gpci: "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		},
 	})
 	assert.NoError(t, err)
 	adminPlayerID2, err = app.store.PlayerCreate(types.Player{
-		Name:         "adminPlayerID2",
-		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-		Ipv4:         "92.22.197.79",
-		Alive:        &[]bool{true}[0],
-		Registration: time.Now(),
-		LastLogin:    time.Now(),
-		TotalSpawns:  &[]int32{0}[0],
-		Warnings:     &[]int32{0}[0],
-		Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		Account: types.Account{
+			Name: "adminPlayerID2",
+			Pass: "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+			Ipv4: "92.22.197.79",
+			Gpci: "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		},
 	})
 	assert.NoError(t, err)
 	adminPlayerID3, err = app.store.PlayerCreate(types.Player{
-		Name:         "adminPlayerID3",
-		Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-		Ipv4:         "92.22.197.79",
-		Alive:        &[]bool{true}[0],
-		Registration: time.Now(),
-		LastLogin:    time.Now(),
-		TotalSpawns:  &[]int32{0}[0],
-		Warnings:     &[]int32{0}[0],
-		Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		Account: types.Account{
+			Name: "adminPlayerID3",
+			Pass: "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+			Ipv4: "92.22.197.79",
+			Gpci: "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+		},
 	})
 	assert.NoError(t, err)
 }

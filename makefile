@@ -21,7 +21,7 @@ static:
 test:
 	TESTING=1 go test -v -race ./server
 
-mongodb:
+databases:
 	-docker stop mongodb
 	-docker rm mongodb
 	-docker stop express
@@ -31,6 +31,11 @@ mongodb:
 		--publish 27017:27017 \
 		--detach \
 		mongo
+	docker run \
+		--name postgres \
+		--publish 5432:5432 \
+		--detach \
+		postgres
 	sleep 5
 	docker run \
 		--name express \

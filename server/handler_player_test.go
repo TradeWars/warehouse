@@ -23,85 +23,67 @@ func Test_playerCreate(t *testing.T) {
 		wantStatus types.Status
 	}{
 		{"v create 1", types.Player{
-			Name:         "John",
-			Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         "92.22.197.79",
-			Alive:        &[]bool{true}[0],
-			Registration: timeTruth.Add(time.Hour),
-			LastLogin:    timeTruth.Add(time.Hour),
-			TotalSpawns:  &[]int32{0}[0],
-			Warnings:     &[]int32{0}[0],
-			Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			Account: types.Account{
+				Name: "John",
+				Pass: "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+				Ipv4: "92.22.197.79",
+				Gpci: "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			},
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v create 2", types.Player{
-			Name:         "Alice",
-			Pass:         "84dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         "165.22.197.79",
-			Alive:        &[]bool{true}[0],
-			Registration: timeTruth.Add(time.Hour * 2),
-			LastLogin:    timeTruth.Add(time.Hour * 2),
-			TotalSpawns:  &[]int32{0}[0],
-			Warnings:     &[]int32{0}[0],
-			Gpci:         "c801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			Account: types.Account{
+				Name: "Alice",
+				Pass: "84dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+				Ipv4: "165.22.197.79",
+				Gpci: "c801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			},
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v create 3", types.Player{
-			Name:         "Steve",
-			Pass:         "94dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         "192.22.197.79",
-			Alive:        &[]bool{true}[0],
-			Registration: timeTruth.Add(time.Hour * 3),
-			LastLogin:    timeTruth.Add(time.Hour * 3),
-			TotalSpawns:  &[]int32{0}[0],
-			Warnings:     &[]int32{0}[0],
-			Gpci:         "d801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			Account: types.Account{
+				Name: "Steve",
+				Pass: "94dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+				Ipv4: "192.22.197.79",
+				Gpci: "d801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			},
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v create 4", types.Player{
-			Name:         "Bob",
-			Pass:         "14dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         "212.22.197.79",
-			Alive:        &[]bool{true}[0],
-			Registration: timeTruth.Add(time.Hour * 4),
-			LastLogin:    timeTruth.Add(time.Hour * 4),
-			TotalSpawns:  &[]int32{0}[0],
-			Warnings:     &[]int32{0}[0],
-			Gpci:         "e801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			Account: types.Account{
+				Name: "Bob",
+				Pass: "14dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+				Ipv4: "212.22.197.79",
+				Gpci: "e801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			},
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"v create 5", types.Player{
-			Name:         "Anne",
-			Pass:         "24dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         "92.22.197.79",
-			Alive:        &[]bool{true}[0],
-			Registration: timeTruth.Add(time.Hour * 5),
-			LastLogin:    timeTruth.Add(time.Hour * 5),
-			TotalSpawns:  &[]int32{0}[0],
-			Warnings:     &[]int32{0}[0],
-			Gpci:         "f801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			Account: types.Account{
+				Name: "Anne",
+				Pass: "24dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+				Ipv4: "92.22.197.79",
+				Gpci: "f801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			},
 		}, types.Status{
 			Success: true,
 			Message: "",
 		}},
 		{"i create dup", types.Player{
-			Name:         "Alice",
-			Pass:         "94dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         "165.22.197.79",
-			Alive:        &[]bool{true}[0],
-			Registration: timeTruth,
-			LastLogin:    timeTruth,
-			TotalSpawns:  &[]int32{0}[0],
-			Warnings:     &[]int32{0}[0],
-			Gpci:         "d801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			Account: types.Account{
+				Name: "Alice",
+				Pass: "94dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+				Ipv4: "165.22.197.79",
+				Gpci: "d801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			},
 		}, types.Status{
 			Success: false,
 			Message: "player name already registered",
@@ -128,7 +110,7 @@ func Test_playerCreate(t *testing.T) {
 				assert.Len(t, status.Result, 24)
 				assert.Empty(t, status.Message)
 
-				playerIDs[tt.body.Name] = bson.ObjectIdHex(status.Result.(string))
+				playerIDs[tt.body.Account.Name] = bson.ObjectIdHex(status.Result.(string))
 			} else {
 				assert.Equal(t, tt.wantStatus.Success, false)
 				assert.Equal(t, tt.wantStatus.Message, status.Message)
@@ -146,29 +128,23 @@ func Test_playerGetByName(t *testing.T) {
 	}{
 		{"v get 1", "John", types.Status{
 			Result: types.Player{
-				Name:         "John",
-				Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-				Ipv4:         "92.22.197.79",
-				Alive:        &[]bool{true}[0],
-				Registration: timeTruth.Add(time.Hour * 1),
-				LastLogin:    timeTruth.Add(time.Hour * 1),
-				TotalSpawns:  &[]int32{0}[0],
-				Warnings:     &[]int32{0}[0],
-				Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+				Account: types.Account{
+					Name: "John",
+					Pass: "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+					Ipv4: "92.22.197.79",
+					Gpci: "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+				},
 			},
 			Success: true,
 		}},
 		{"v get 2", "Alice", types.Status{
 			Result: types.Player{
-				Name:         "Alice",
-				Pass:         "84dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-				Ipv4:         "165.22.197.79",
-				Alive:        &[]bool{true}[0],
-				Registration: timeTruth.Add(time.Hour * 2),
-				LastLogin:    timeTruth.Add(time.Hour * 2),
-				TotalSpawns:  &[]int32{0}[0],
-				Warnings:     &[]int32{0}[0],
-				Gpci:         "c801a9f9553b892c4cda9219171a4f6d8c8b299a",
+				Account: types.Account{
+					Name: "Alice",
+					Pass: "84dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+					Ipv4: "165.22.197.79",
+					Gpci: "c801a9f9553b892c4cda9219171a4f6d8c8b299a",
+				},
 			},
 			Success: true,
 		}},
@@ -224,16 +200,13 @@ func Test_playerUpdate(t *testing.T) {
 		wantStatus types.Status
 	}{
 		{"v update 1 John", types.Player{
-			ID:           playerIDs["John"],
-			Name:         "John",
-			Pass:         "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
-			Ipv4:         "92.22.197.79",
-			Alive:        &[]bool{true}[0],
-			Registration: timeTruth,
-			LastLogin:    timeTruth.Add(time.Hour),
-			TotalSpawns:  &[]int32{0}[0],
-			Warnings:     &[]int32{0}[0],
-			Gpci:         "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			ID: playerIDs["John"],
+			Account: types.Account{
+				Name: "John",
+				Pass: "74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae",
+				Ipv4: "92.22.197.79",
+				Gpci: "b801a9f9553b892c4cda9219171a4f6d8c8b299a",
+			},
 		}, types.Status{
 			Success: true,
 		}},

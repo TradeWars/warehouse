@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/url"
 	"strings"
@@ -84,10 +83,15 @@ func (app *App) playerGet(r io.Reader, query url.Values) (status types.Status, e
 	if params.Name != "" {
 		player, err = app.store.PlayerGetByName(params.Name)
 	} else if params.ID != "" {
-		fmt.Println("params.ID", params.ID)
-		player, err = app.store.PlayerGetByID(bson.ObjectIdHex(params.ID))
+		if !bson.IsObjectIdHex(params.ID) {
+			status = types.NewStatus(nil, false, "invalid id format")
+			return
+		} else {
+			player, err = app.store.PlayerGetByID(bson.ObjectIdHex(params.ID))
+		}
 	} else {
 		status = types.NewStatus(nil, false, "id or name not specified")
+		return
 	}
 
 	if err == nil {

@@ -7,11 +7,11 @@ import (
 
 	"github.com/go-resty/resty"
 	"github.com/joho/godotenv"
-	"github.com/kelseyhightower/envconfig"
 )
 
 var client *resty.Client
 var app *App
+var appCache *App
 
 func TestMain(m *testing.M) {
 	err := godotenv.Load("../.env")
@@ -19,10 +19,13 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	config := &Config{}
-	err = envconfig.Process("SSC", config)
-	if err != nil {
-		panic(err)
+	config := &Config{
+		Temporary: false,
+		Bind:      "0.0.0.0:7788",
+		Auth:      "secret_key",
+	}
+	configCache := &Config{
+		Temporary: true,
 	}
 
 	client = resty.New().
@@ -31,6 +34,10 @@ func TestMain(m *testing.M) {
 		SetHostURL("http://" + config.Bind)
 
 	app, err = Initialise(config)
+	if err != nil {
+		panic(err)
+	}
+	appCache, err = Initialise(configCache)
 	if err != nil {
 		panic(err)
 	}

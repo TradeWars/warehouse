@@ -14,8 +14,11 @@ static:
 	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o ssc .
 
 release:
+	# re-tag this commit
+	-git tag -d $(VERSION)
 	git tag $(VERSION)
-	goreleaser
+	# build release binaries with current version tag
+	GITHUB_TOKEN=$(GITHUB_TOKEN) goreleaser --rm-dist
 
 # -
 # Testing

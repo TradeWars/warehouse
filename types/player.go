@@ -1,8 +1,6 @@
 package types
 
 import (
-	"time"
-
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -20,17 +18,16 @@ import (
 type Player struct {
 	ID      bson.ObjectId `validate:"omitempty,required" json:"_id"     bson:"_id"`
 	Account Account       `validate:"required"           json:"account" bson:"account"`
-	Spawn   Geo
+	Spawn   Geo           `                              json:"spawn"   bson:"spawn"`
 }
 
 // Account represents player account information such as password hash
 type Account struct {
-	Name         string    `validate:"required,max=24" json:"name"               bson:"name"`
-	Pass         string    `validate:"required"        json:"pass"               bson:"pass"`
-	Ipv4         string    `validate:"required"        json:"ipv4"               bson:"ipv4"`
-	Registration time.Time `validate:"required"        json:"regdate"            bson:"regdate"`
-	Gpci         string    `validate:"required,len=40" json:"gpci"               bson:"gpci"`
-	Archived     bool      `validate:"omitempty"       json:"archived,omitempty" bson:"archived"`
+	Name     string `validate:"required,max=24" json:"name"               bson:"name"`
+	Pass     string `validate:"required"        json:"pass"               bson:"pass"`
+	Ipv4     string `validate:"required"        json:"ipv4"               bson:"ipv4"`
+	Gpci     string `validate:"required,len=40" json:"gpci"               bson:"gpci"`
+	Archived bool   `validate:"omitempty"       json:"archived,omitempty" bson:"archived"`
 }
 
 // ExamplePlayer returns an example object of a player
@@ -38,12 +35,11 @@ func ExamplePlayer() Player {
 	return Player{
 		ID: bson.NewObjectId(),
 		Account: Account{
-			Name:         "John",
-			Pass:         "[whirlpool hash of password]",
-			Ipv4:         "191.24.25.16",
-			Registration: time.Now().Add(-time.Hour * 24),
-			Gpci:         "[gpci hash]",
-			Archived:     false,
+			Name:     "John",
+			Pass:     "[whirlpool hash of password]",
+			Ipv4:     "191.24.25.16",
+			Gpci:     "[gpci hash]",
+			Archived: false,
 		},
 	}
 }

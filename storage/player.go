@@ -11,7 +11,7 @@ func (mgr *Manager) ensurePlayerCollection() (err error) {
 	mgr.players = mgr.db.C("players")
 
 	err = mgr.players.EnsureIndex(mgo.Index{
-		Key:    []string{"name"},
+		Key:    []string{"account.name"},
 		Unique: true,
 	})
 	if err != nil {
@@ -29,7 +29,7 @@ func (mgr *Manager) PlayerCreate(player types.Player) (id bson.ObjectId, err err
 
 // PlayerGetByName returns a player object by name
 func (mgr *Manager) PlayerGetByName(name string) (player types.Player, err error) {
-	err = mgr.players.Find(bson.M{"name": name}).One(&player)
+	err = mgr.players.Find(bson.M{"account.name": name}).One(&player)
 	return
 }
 

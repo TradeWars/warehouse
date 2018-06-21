@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/go-resty/resty"
-	"github.com/joho/godotenv"
 )
 
 var client *resty.Client
@@ -14,10 +13,7 @@ var app *App
 var appCache *App
 
 func TestMain(m *testing.M) {
-	err := godotenv.Load("../.env")
-	if err != nil {
-		panic(err)
-	}
+	var err error
 
 	config := &Config{
 		Temporary: false,

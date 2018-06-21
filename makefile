@@ -30,6 +30,8 @@ test:
 databases:
 	-docker stop mongodb
 	-docker rm mongodb
+	-docker stop postgres
+	-docker rm postgres
 	-docker stop express
 	-docker rm express
 	docker run \

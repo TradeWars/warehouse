@@ -1,4 +1,4 @@
-VERSION := $(shell date +%Y-%m-%dT%H-%M-%S)
+VERSION := $(shell date +%yw%W.%w.%H)
 LDFLAGS := -ldflags "-X github.com/Southclaws/ScavengeSurviveCore/server.version=$(VERSION)"
 -include .env
 
@@ -13,6 +13,9 @@ fast:
 static:
 	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o ssc .
 
+release:
+	git tag $(VERSION)
+	goreleaser
 
 # -
 # Testing

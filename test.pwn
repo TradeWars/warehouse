@@ -4,10 +4,6 @@
 #include <YSI\y_testing>
 
 
-main() {
-    //
-}
-
 Test:ParseStatus() {
     new Node:n = JsonObject(
         "result", JsonObject(
@@ -30,4 +26,116 @@ Test:ParseStatus() {
     new key[16];
     JsonGetString(result, "key", key);
     ASSERT(!strcmp(key, "value"));
+}
+
+new RequestsClient:testClient;
+
+public OnScriptInit() {
+    print("Doing request test");
+
+    testClient = RequestsClient("http://localhost:7788", RequestHeaders(
+        "Authorization", "cunning_fox"
+    ));
+    if(!IsValidRequestsClient(testClient)) {
+        print("failed to create requests client");
+    }
+
+    new Error:e = SSC_PlayerCreate(testClient, 0, JsonObject(
+        "account", JsonObject(
+            "name", JsonString("Southclaws"),
+            "pass", JsonString("$2y$12$FY26qU4VUsT00lvv.FFGA.jMCAlHVgUatwlAuE9tf7j8rnevR0ioS"),
+            "ipv4", JsonString("127.0.0.1"),
+            "gpci", JsonString("0000000000000000000000000000000000000000")
+        )
+    ));
+    if(IsError(e)) {
+        PrintErrors();
+        Handled();
+    }
+}
+
+new PlayerObjectID[25];
+
+public OnSSCPlayerCreate(playerid, bool:success, message[], Error:error, Node:result) {
+    if(IsError(error)) {
+        PrintErrors();
+        Handled();
+    }
+
+    if(!success) {
+        printf("Success was false: %s", message);
+        return;
+    }
+
+    JsonGetNodeString(result, PlayerObjectID);
+    printf("player ObjectId: %s", PlayerObjectID);
+
+    // Get the full record
+
+    new Error:e = SSC_PlayerGetByName(testClient, 0, "Southclaws");
+    if(IsError(e)) {
+        PrintErrors();
+        Handled();
+    }
+}
+
+public OnSSCPlayerGet(playerid, bool:success, message[], Error:error, Node:result) {
+    if(IsError(error)) {
+        PrintErrors();
+        Handled();
+    }
+
+    if(!success) {
+        printf("Success was false: %s", message);
+        return;
+    }
+
+    new buf[512];
+    JsonStringify(result, buf);
+    print(buf);
+
+    // Update the record
+
+    new Error:e = SSC_PlayerUpdate(
+        testClient,
+        0,
+        JsonObject(
+            "_id", JsonString(PlayerObjectID),
+            "account", JsonObject(
+                "name", JsonString("Southclaws"),
+                "pass", JsonString("$2y$12$FY26qU4VUsT00lvv.FFGA.jMCAlHVgUatwlAuE9tf7j8rnevR0ioS"),
+                "ipv4", JsonString("192.168.1.1"),
+                "gpci", JsonString("1111111111111111111111111111111111111111")
+            ),
+            "spawn", JsonObject(
+                "posx", JsonFloat(50.0),
+                "posy", JsonFloat(100.0),
+                "posz", JsonFloat(3.0)
+            )
+        )
+    );
+    if(IsError(e)) {
+        PrintErrors();
+        Handled();
+    }
+}
+
+public OnSSCPlayerUpdate(playerid, bool:success, message[], Error:error, Node:result) {
+    if(IsError(error)) {
+        PrintErrors();
+        Handled();
+    }
+
+    if(!success) {
+        printf("Success was false: %s", message);
+        return;
+    }
+
+    new buf[512];
+    JsonStringify(result, buf);
+    print(buf);
+}
+
+public OnRequestFailure(Request:id, errorCode, errorMessage[], len) {
+    printf("Request %d failed: %d %s", _:id, errorCode, errorMessage);
 }

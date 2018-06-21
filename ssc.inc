@@ -3,6 +3,17 @@
 #include <a_samp>
 #include <errors>
 #include <requests>
+#include <map>
+
+
+// OnSSCPlayerCreate is called after SSC_PlayerCreate finishes
+forward OnSSCPlayerCreate(playerid, bool:success, message[], Error:error, Node:result);
+
+// OnSSCPlayerGet is called after SSC_PlayerGetBy(Name|ID) finishes
+forward OnSSCPlayerGet(playerid, bool:success, message[], Error:error, Node:result);
+
+// OnSSCPlayerUpdate is called after SSC_PlayerUpdate finishes
+forward OnSSCPlayerUpdate(playerid, bool:success, message[], Error:error, Node:result);
 
 
 // ParseStatus extracts success and message from SSC success responses:
@@ -33,4 +44,157 @@ Error:ParseStatus(Node:node, &bool:success, &Node:result, message[], len = sizeo
     }
 
     return NoError();
+}
+
+
+// -
+// Interface: /store/playerCreate
+// -
+
+static Map:playerCreatePlayerID;
+forward _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node);
+
+Error:SSC_PlayerCreate(RequestsClient:client, playerid, Node:node) {
+    new Request:id = RequestJSON(
+        client,
+        "/store/playerCreate",
+        HTTP_METHOD_POST,
+        "_ssc_onPlayerCreate",
+        node
+    );
+    if(!IsValidRequest(id)) {
+        return Error(1, "failed to send playerCreate request");
+    }
+
+    MAP_insert_val_val(playerCreatePlayerID, _:id, playerid);
+
+    return NoError();
+}
+public _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node) {
+    new playerid = MAP_get_val_val(playerCreatePlayerID, _:id);
+    MAP_remove_val(playerCreatePlayerID, _:id);
+
+    new bool:success;
+    new Node:result;
+    new message[128];
+    new Error:e = ParseStatus(node, success, result, message);
+    if(IsError(e)) {
+        e = Error(1, "failed to parse status");
+    }
+    if(status != HTTP_STATUS_OK) {
+        e = Error(1, "status was not OK");
+    }
+
+    if(message[0] == 0) {
+        message[0] = '\1';
+    }
+
+    JsonToggleGC(result, false);
+    CallLocalFunction("OnSSCPlayerCreate", "ddsdd", playerid, success, message, _:e, _:result);
+    JsonToggleGC(result, true);
+
+    return;
+}
+
+
+// -
+// Interface: /store/playerGet
+// -
+
+static Map:playerGetPlayerID;
+forward _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node);
+
+Error:SSC_PlayerGetByName(RequestsClient:client, playerid, name[]) {
+    new path[128];
+    format(path, sizeof path, "/store/playerGet?name=%s", name);
+
+    new Request:id = RequestJSON(
+        client,
+        path,
+        HTTP_METHOD_GET,
+        "_ssc_onPlayerGet"
+    );
+    if(!IsValidRequest(id)) {
+        return Error(1, "failed to send playerGet request");
+    }
+
+    MAP_insert_val_val(playerGetPlayerID, _:id, playerid);
+
+    return NoError();
+}
+
+public _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node) {
+    new playerid = MAP_get_val_val(playerGetPlayerID, _:id);
+    MAP_remove_val(playerGetPlayerID, _:id);
+
+    new bool:success;
+    new Node:result;
+    new message[128];
+    new Error:e = ParseStatus(node, success, result, message);
+    if(IsError(e)) {
+        e = Error(1, "failed to parse status");
+    }
+    if(status != HTTP_STATUS_OK) {
+        e = Error(1, "status was not OK");
+    }
+
+    if(message[0] == 0) {
+        message[0] = '\1';
+    }
+
+    JsonToggleGC(result, false);
+    CallLocalFunction("OnSSCPlayerGet", "ddsdd", playerid, success, message, _:e, _:result);
+    JsonToggleGC(result, true);
+
+    return;
+}
+
+
+// -
+// Interface: /store/playerUpdate
+// -
+
+static Map:playerUpdatePlayerID;
+forward _ssc_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node);
+
+Error:SSC_PlayerUpdate(RequestsClient:client, playerid, Node:node) {
+    new Request:id = RequestJSON(
+        client,
+        "/store/playerUpdate",
+        HTTP_METHOD_PATCH,
+        "_ssc_onPlayerUpdate",
+        node
+    );
+    if(!IsValidRequest(id)) {
+        return Error(1, "failed to send playerUpdate request");
+    }
+
+    // Same map strategy as with the loading data process
+    MAP_insert_val_val(playerUpdatePlayerID, _:id, playerid);
+
+    return NoError();
+}
+
+public _ssc_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node) {
+    new playerid = MAP_get_val_val(playerGetPlayerID, _:id);
+    MAP_remove_val(playerGetPlayerID, _:id);
+
+    new bool:success;
+    new Node:result;
+    new message[128];
+    new Error:e = ParseStatus(node, success, result, message);
+    if(IsError(e)) {
+        e = Error(1, "failed to parse status");
+    }
+    if(status != HTTP_STATUS_OK) {
+        e = Error(1, "status was not OK");
+    }
+
+    if(message[0] == 0) {
+        message[0] = '\1';
+    }
+
+    JsonToggleGC(result, false);
+    CallLocalFunction("OnSSCPlayerUpdate", "ddsdd", playerid, success, message, _:e, _:result);
+    JsonToggleGC(result, true);
 }

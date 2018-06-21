@@ -23,6 +23,9 @@ func TestMain(m *testing.M) {
 		Temporary: false,
 		Bind:      "0.0.0.0:7788",
 		Auth:      "secret_key",
+		MongoHost: "localhost",
+		MongoPort: "27017",
+		MongoName: "ss",
 	}
 	configCache := &Config{
 		Temporary: true,

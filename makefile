@@ -13,7 +13,7 @@ fast:
 static:
 	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o ssc .
 
-release:
+release: build push
 	# re-tag this commit
 	-git tag -d $(VERSION)
 	git tag $(VERSION)
@@ -54,7 +54,7 @@ build: static
 	docker build -t southclaws/ssc:$(VERSION) .
 
 push:
-	docker push -t southclaws/ssc:$(VERSION)
+	docker push southclaws/ssc:$(VERSION)
 
 run:
 	docker run \

@@ -1,5 +1,5 @@
-VERSION := $(shell date +%Y-%m-%dT%H-%M-%S)
-LDFLAGS := -ldflags "-X server.version=$(VERSION)"
+VERSION := $(shell date +%yw%W.%w.%H)
+LDFLAGS := -ldflags "-X github.com/Southclaws/ScavengeSurviveCore/server.version=$(VERSION)"
 -include .env
 
 
@@ -13,6 +13,12 @@ fast:
 static:
 	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o ssc .
 
+release: build push
+	# re-tag this commit
+	-git tag -d $(VERSION)
+	git tag $(VERSION)
+	# build release binaries with current version tag
+	GITHUB_TOKEN=$(GITHUB_TOKEN) goreleaser --rm-dist
 
 # -
 # Testing
@@ -53,7 +59,7 @@ build: static
 	docker build -t southclaws/ssc:$(VERSION) .
 
 push:
-	docker push -t southclaws/ssc:$(VERSION)
+	docker push southclaws/ssc:$(VERSION)
 
 run:
 	docker run \

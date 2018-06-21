@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 
+	"github.com/Southclaws/ScavengeSurviveCore/cache"
 	"github.com/Southclaws/ScavengeSurviveCore/storage"
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
@@ -20,10 +21,11 @@ var version string
 
 // Config stores static configuration
 type Config struct {
-	Bind      string `split_words:"true" required:"true"`
-	Auth      string `split_words:"true" required:"true"`
-	MongoHost string `split_words:"true" required:"true"`
-	MongoPort string `split_words:"true" required:"true"`
+	Temporary bool   `default:"true"`
+	Bind      string `default:"0.0.0.0:7788"`
+	Auth      string `default:"cunning_fox"`
+	MongoHost string `split_words:"true" required:"false"`
+	MongoPort string `split_words:"true" required:"false"`
 	MongoName string `split_words:"true" required:"false"`
 	MongoUser string `split_words:"true" required:"false"`
 	MongoPass string `split_words:"true" required:"false"`
@@ -58,16 +60,39 @@ func Initialise(config *Config) (app *App, err error) {
 		"report": app.reportRoutes(),
 		"ban":    app.banRoutes(),
 	}
-	app.store, err = storage.New(storage.Config{
-		Host: config.MongoHost,
-		Port: config.MongoPort,
-		Name: config.MongoName,
-		User: config.MongoUser,
-		Pass: config.MongoPass,
-	})
-	if err != nil {
-		err = errors.Wrap(err, "failed to connect to storage")
-		return
+
+	if config.Temporary {
+		logger.Debug("temporary mode is active, no data will persist!")
+		app.store = cache.New()
+	} else {
+		if config.Bind == "" {
+			err = errors.New("app not in temporary mode but SSC_BIND is not set")
+			return
+		}
+		if config.Auth == "" {
+			err = errors.New("app not in temporary mode but SSC_AUTH is not set")
+			return
+		}
+		if config.MongoHost == "" {
+			err = errors.New("app not in temporary mode but SSC_MONGO_HOST is not set")
+			return
+		}
+		if config.MongoPort == "" {
+			err = errors.New("app not in temporary mode but SSC_MONGO_PORT is not set")
+			return
+		}
+
+		app.store, err = storage.New(storage.Config{
+			Host: config.MongoHost,
+			Port: config.MongoPort,
+			Name: config.MongoName,
+			User: config.MongoUser,
+			Pass: config.MongoPass,
+		})
+		if err != nil {
+			err = errors.Wrap(err, "failed to connect to storage")
+			return
+		}
 	}
 	app.ctx, app.cancel = context.WithCancel(context.Background())
 

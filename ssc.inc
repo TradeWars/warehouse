@@ -24,7 +24,7 @@ forward OnSSCPlayerUpdate(playerid, bool:success, message[], Error:error, Node:r
 //     "message": "error message"
 // }
 //
-Error:ParseStatus(Node:node, &bool:success, &Node:result, message[], len = sizeof message) {
+stock Error:ParseStatus(Node:node, &bool:success, &Node:result, message[], len = sizeof message) {
     new ret;
 
     ret = JsonGetBool(node, "success", success);
@@ -54,7 +54,7 @@ Error:ParseStatus(Node:node, &bool:success, &Node:result, message[], len = sizeo
 static Map:playerCreatePlayerID;
 forward _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node);
 
-Error:SSC_PlayerCreate(RequestsClient:client, playerid, Node:node) {
+stock Error:SSC_PlayerCreate(RequestsClient:client, playerid, Node:node) {
     new Request:id = RequestJSON(
         client,
         "/store/playerCreate",
@@ -104,7 +104,7 @@ public _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node) {
 static Map:playerGetPlayerID;
 forward _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node);
 
-Error:SSC_PlayerGetByName(RequestsClient:client, playerid, name[]) {
+stock Error:SSC_PlayerGetByName(RequestsClient:client, playerid, name[]) {
     new path[128];
     format(path, sizeof path, "/store/playerGet?name=%s", name);
 
@@ -157,7 +157,7 @@ public _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node) {
 static Map:playerUpdatePlayerID;
 forward _ssc_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node);
 
-Error:SSC_PlayerUpdate(RequestsClient:client, playerid, Node:node) {
+stock Error:SSC_PlayerUpdate(RequestsClient:client, playerid, Node:node) {
     new Request:id = RequestJSON(
         client,
         "/store/playerUpdate",

@@ -29,7 +29,7 @@ func (app *App) playerRoutes() []Route {
 			"playerGet",
 			"GET",
 			"/store/playerGet",
-			"?name=John, ?name=" + bson.NewObjectId(),
+			"?name=John, ?id=" + bson.NewObjectId(),
 			types.ExamplePlayer(),
 			app.playerGet,
 		},

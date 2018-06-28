@@ -86,9 +86,8 @@ func (app *App) playerGet(r io.Reader, query url.Values) (status types.Status, e
 		if !bson.IsObjectIdHex(params.ID) {
 			status = types.NewStatus(nil, false, "invalid id format")
 			return
-		} else {
-			player, err = app.store.PlayerGetByID(bson.ObjectIdHex(params.ID))
 		}
+		player, err = app.store.PlayerGetByID(bson.ObjectIdHex(params.ID))
 	} else {
 		status = types.NewStatus(nil, false, "id or name not specified")
 		return

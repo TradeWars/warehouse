@@ -5,6 +5,7 @@ package server
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -13,8 +14,8 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/Southclaws/ScavengeSurviveCore/cache"
-	"github.com/Southclaws/ScavengeSurviveCore/events"
 	"github.com/Southclaws/ScavengeSurviveCore/storage"
+	"github.com/Southclaws/ScavengeSurviveCore/timeline"
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
 
@@ -38,7 +39,7 @@ type App struct {
 	handlers   map[string][]Route
 	validator  *validator.Validate
 	store      types.Storer
-	events     types.Eventer
+	timeline   types.Timeline
 	httpServer *http.Server
 	ctx        context.Context
 	cancel     context.CancelFunc
@@ -96,13 +97,22 @@ func Initialise(config *Config) (app *App, err error) {
 			return
 		}
 
-		app.events, err = events.New(events.Config{
+		app.timeline, err = timeline.New(timeline.Config{
 			Host: "localhost",
 			Port: "5432",
-			Name: "events",
+			Name: "ssc",
 			User: "default",
 			Pass: "default",
 		})
+		if err != nil {
+			err = errors.Wrap(err, "failed to connect to event store")
+			return
+		}
+
+		err = app.timeline.Emit(time.Now(), []byte(`{"player":"Southclaws"}`))
+		if err != nil {
+			panic(err)
+		}
 	}
 	app.ctx, app.cancel = context.WithCancel(context.Background())
 

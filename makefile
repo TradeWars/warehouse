@@ -38,6 +38,8 @@ databases:
 	-docker rm timescaledb
 	-docker stop express
 	-docker rm express
+	-docker stop pgadmin
+	-docker rm pgadmin
 	docker run \
 		--name mongodb \
 		--publish 27017:27017 \
@@ -57,6 +59,13 @@ databases:
 		--link mongodb:mongo \
 		--detach \
 		mongo-express
+	docker run \
+		--name pgadmin \
+		--publish 8082:8082 \
+		-e "PGADMIN_DEFAULT_EMAIL=u@d.co" \
+		-e "PGADMIN_DEFAULT_PASSWORD=password" \
+		--detach \
+		dpage/pgadmin4
 
 
 # -

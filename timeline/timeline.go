@@ -1,22 +1,23 @@
-package events
+package timeline
 
 import (
 	"database/sql"
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	// PostgreSQL interface
 	_ "github.com/lib/pq"
 )
 
 /*
-CREATE database tutorial;
-\c tutorial
+CREATE database ssc;
+\c ssc
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
 CREATE TABLE events (
   time TIMESTAMPTZ NOT NULL,
-  data JSON        NOT NULL,
+  data JSONB       NOT NULL,
   uuid UUID        NOT NULL
 );
 
@@ -27,6 +28,8 @@ SELECT create_hypertable('events', 'time');
 type Manager struct {
 	config Config
 	db     *sql.DB
+
+	emit *sql.Stmt
 }
 
 // Config describes how to connect to the database
@@ -46,8 +49,13 @@ func New(config Config) (mgr *Manager, err error) {
 	}
 
 	mgr.db, err = sql.Open("postgres", fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s",
-		config.Host, config.Port, config.User, config.Name))
+		"host=%s port=%s dbname=%s user=%s password=%s sslmode=disable",
+		config.Host, config.Port, config.Name, config.User, config.Pass))
+	if err != nil {
+		return
+	}
+
+	mgr.emit, err = mgr.db.Prepare(`INSERT INTO events VALUES($1, $2, $3)`)
 	if err != nil {
 		return
 	}
@@ -56,6 +64,7 @@ func New(config Config) (mgr *Manager, err error) {
 }
 
 // Emit handles an event emitted from the client and stores it to the database
-func (mgr *Manager) Emit(timestamp time.Time, event interface{}) (err error) {
+func (mgr *Manager) Emit(timestamp time.Time, data []byte) (err error) {
+	_, err = mgr.emit.Exec(timestamp, data, uuid.New().String())
 	return
 }

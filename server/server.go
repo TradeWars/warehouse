@@ -13,6 +13,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/Southclaws/ScavengeSurviveCore/cache"
+	"github.com/Southclaws/ScavengeSurviveCore/events"
 	"github.com/Southclaws/ScavengeSurviveCore/storage"
 	"github.com/Southclaws/ScavengeSurviveCore/types"
 )
@@ -37,6 +38,7 @@ type App struct {
 	handlers   map[string][]Route
 	validator  *validator.Validate
 	store      types.Storer
+	events     types.Eventer
 	httpServer *http.Server
 	ctx        context.Context
 	cancel     context.CancelFunc
@@ -93,6 +95,14 @@ func Initialise(config *Config) (app *App, err error) {
 			err = errors.Wrap(err, "failed to connect to storage")
 			return
 		}
+
+		app.events, err = events.New(events.Config{
+			Host: "localhost",
+			Port: "5432",
+			Name: "events",
+			User: "default",
+			Pass: "default",
+		})
 	}
 	app.ctx, app.cancel = context.WithCancel(context.Background())
 

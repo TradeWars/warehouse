@@ -1,4 +1,5 @@
-VERSION := $(shell date -u +%yw%W.%w.%H)
+VERSION := $(shell cat VERSION)
+NEW_VERSION := $(shell date -u +%yw%W.%w.%H)
 LDFLAGS := -ldflags "-X github.com/Southclaws/ScavengeSurviveCore/server.version=$(VERSION)"
 -include .env
 
@@ -12,6 +13,9 @@ fast:
 
 static:
 	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o ssc .
+
+next:
+	echo $(NEW_VERSION) > VERSION
 
 release: build push
 	# re-tag this commit
@@ -30,8 +34,8 @@ test:
 databases:
 	-docker stop mongodb
 	-docker rm mongodb
-	-docker stop postgres
-	-docker rm postgres
+	-docker stop timescaledb
+	-docker rm timescaledb
 	-docker stop express
 	-docker rm express
 	docker run \
@@ -40,10 +44,12 @@ databases:
 		--detach \
 		mongo
 	docker run \
-		--name postgres \
+		--name timescaledb \
 		--publish 5432:5432 \
 		--detach \
-		postgres
+		-e POSTGRES_USER=default \
+		-e POSTGRES_PASSWORD=default \
+		timescale/timescaledb:0.10.0-pg9.6
 	sleep 5
 	docker run \
 		--name express \

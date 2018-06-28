@@ -5,7 +5,6 @@ package server
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -107,11 +106,6 @@ func Initialise(config *Config) (app *App, err error) {
 		if err != nil {
 			err = errors.Wrap(err, "failed to connect to event store")
 			return
-		}
-
-		err = app.timeline.Emit(time.Now(), []byte(`{"player":"Southclaws"}`))
-		if err != nil {
-			panic(err)
 		}
 	}
 	app.ctx, app.cancel = context.WithCancel(context.Background())

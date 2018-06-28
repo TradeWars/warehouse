@@ -61,9 +61,10 @@ databases:
 		mongo-express
 	docker run \
 		--name pgadmin \
-		--publish 8082:8082 \
+		--publish 8082:80 \
 		-e "PGADMIN_DEFAULT_EMAIL=u@d.co" \
 		-e "PGADMIN_DEFAULT_PASSWORD=password" \
+		--link=timescaledb \
 		--detach \
 		dpage/pgadmin4
 

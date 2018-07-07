@@ -66,3 +66,4 @@ crashinfo.txt
 #
 
 *.sublime-workspace
+.vs/

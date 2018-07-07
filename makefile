@@ -1,4 +1,5 @@
-VERSION := $(shell date -u +%yw%W.%w.%H)
+VERSION := $(shell cat VERSION)
+NEW_VERSION := $(shell date -u +%yw%W.%w.%H)
 LDFLAGS := -ldflags "-X github.com/TradeWars/warehouse/server.version=$(VERSION)"
 -include .env
 
@@ -12,6 +13,9 @@ fast:
 
 static:
 	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o warehouse .
+
+next:
+	echo $(NEW_VERSION) > VERSION
 
 release: build push
 	# re-tag this commit

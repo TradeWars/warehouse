@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 
-	"github.com/Southclaws/ScavengeSurviveCore/types"
+	"github.com/TradeWars/warehouse/types"
 )
 
 func (app *App) playerRoutes() []Route {

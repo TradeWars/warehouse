@@ -1,5 +1,5 @@
 VERSION := $(shell date -u +%yw%W.%w.%H)
-LDFLAGS := -ldflags "-X github.com/Southclaws/ScavengeSurviveCore/server.version=$(VERSION)"
+LDFLAGS := -ldflags "-X github.com/TradeWars/warehouse/server.version=$(VERSION)"
 -include .env
 
 

@@ -7,7 +7,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/pkg/errors"
 
-	"github.com/Southclaws/ScavengeSurviveCore/types"
+	"github.com/TradeWars/warehouse/types"
 )
 
 func (mgr *Manager) ensureAdminCollection() (err error) {

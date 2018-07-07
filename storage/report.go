@@ -5,7 +5,7 @@ import (
 
 	"github.com/globalsign/mgo/bson"
 
-	"github.com/Southclaws/ScavengeSurviveCore/types"
+	"github.com/TradeWars/warehouse/types"
 )
 
 func (mgr *Manager) ensureReportCollection() (err error) {

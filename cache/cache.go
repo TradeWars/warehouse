@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Southclaws/ScavengeSurviveCore/types"
+	"github.com/TradeWars/warehouse/types"
 	"github.com/globalsign/mgo/bson"
 )
 

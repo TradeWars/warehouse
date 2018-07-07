@@ -8,7 +8,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Southclaws/ScavengeSurviveCore/types"
+	"github.com/TradeWars/warehouse/types"
 )
 
 var reportIDs = make(map[bson.ObjectId]bson.ObjectId)

@@ -4,7 +4,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/kelseyhightower/envconfig"
 
-	"github.com/Southclaws/ScavengeSurviveCore/server"
+	"github.com/TradeWars/warehouse/server"
 )
 
 func main() {

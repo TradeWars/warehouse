@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/url"
 
-	"github.com/Southclaws/ScavengeSurviveCore/types"
+	"github.com/TradeWars/warehouse/types"
 )
 
 func (app *App) indexRoutes() []Route {

@@ -12,9 +12,9 @@ import (
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 
-	"github.com/Southclaws/ScavengeSurviveCore/cache"
-	"github.com/Southclaws/ScavengeSurviveCore/storage"
-	"github.com/Southclaws/ScavengeSurviveCore/types"
+	"github.com/TradeWars/warehouse/cache"
+	"github.com/TradeWars/warehouse/storage"
+	"github.com/TradeWars/warehouse/types"
 )
 
 var version string

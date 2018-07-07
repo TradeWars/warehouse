@@ -6,7 +6,7 @@ import (
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 
-	"github.com/Southclaws/ScavengeSurviveCore/util"
+	"github.com/TradeWars/warehouse/util"
 )
 
 // Manager provides access to collections and predefined CRUD functionality.

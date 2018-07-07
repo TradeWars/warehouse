@@ -1,3 +1,3 @@
 FROM scratch
-ADD ssc ssc
-ENTRYPOINT [ "./ssc" ]
+ADD warehouse warehouse
+ENTRYPOINT [ "./warehouse" ]

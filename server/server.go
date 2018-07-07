@@ -45,7 +45,7 @@ type App struct {
 // Initialise performs all the necessary actions to bootstrap the application
 // into a runnable state ready for starting with app.Start
 func Initialise(config *Config) (app *App, err error) {
-	logger.Debug("initialising ssc-server with debug logging",
+	logger.Debug("initialising warehouse with debug logging",
 		zap.String("version", version),
 		zap.Any("config", config))
 
@@ -66,19 +66,19 @@ func Initialise(config *Config) (app *App, err error) {
 		app.store = cache.New()
 	} else {
 		if config.Bind == "" {
-			err = errors.New("app not in temporary mode but SSC_BIND is not set")
+			err = errors.New("app not in temporary mode but WAREHOUSE_BIND is not set")
 			return
 		}
 		if config.Auth == "" {
-			err = errors.New("app not in temporary mode but SSC_AUTH is not set")
+			err = errors.New("app not in temporary mode but WAREHOUSE_AUTH is not set")
 			return
 		}
 		if config.MongoHost == "" {
-			err = errors.New("app not in temporary mode but SSC_MONGO_HOST is not set")
+			err = errors.New("app not in temporary mode but WAREHOUSE_MONGO_HOST is not set")
 			return
 		}
 		if config.MongoPort == "" {
-			err = errors.New("app not in temporary mode but SSC_MONGO_PORT is not set")
+			err = errors.New("app not in temporary mode but WAREHOUSE_MONGO_PORT is not set")
 			return
 		}
 

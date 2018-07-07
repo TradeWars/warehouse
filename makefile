@@ -8,10 +8,10 @@ LDFLAGS := -ldflags "-X github.com/TradeWars/warehouse/server.version=$(VERSION)
 # -
 
 fast:
-	go build $(LDFLAGS) -o ssc
+	go build $(LDFLAGS) -o warehouse
 
 static:
-	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o ssc .
+	CGO_ENABLED=0 GOOS=linux go build -a $(LDFLAGS) -o warehouse .
 
 release: build push
 	# re-tag this commit
@@ -58,13 +58,13 @@ databases:
 # -
 
 build: static
-	docker build -t southclaws/ssc:$(VERSION) .
+	docker build -t southclaws/tw-warehouse:$(VERSION) .
 
 push:
-	docker push southclaws/ssc:$(VERSION)
+	docker push southclaws/tw-warehouse:$(VERSION)
 
 run:
 	docker run \
-		--name ssc \
+		--name warehouse \
 		--env-file .env \
-		southclaws/ssc:$(VERSION)
+		southclaws/tw-warehouse:$(VERSION)

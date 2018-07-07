@@ -6,17 +6,17 @@
 #include <map>
 
 
-// OnSSCPlayerCreate is called after SSC_PlayerCreate finishes
-forward OnSSCPlayerCreate(playerid, bool:success, message[], Error:error, Node:result);
+// OnWarehousePlayerCreate is called after WarehousePlayerCreate finishes
+forward OnWarehousePlayerCreate(playerid, bool:success, message[], Error:error, Node:result);
 
-// OnSSCPlayerGet is called after SSC_PlayerGetBy(Name|ID) finishes
-forward OnSSCPlayerGet(playerid, bool:success, message[], Error:error, Node:result);
+// OnWarehousePlayerGet is called after WarehousePlayerGetBy(Name|ID) finishes
+forward OnWarehousePlayerGet(playerid, bool:success, message[], Error:error, Node:result);
 
-// OnSSCPlayerUpdate is called after SSC_PlayerUpdate finishes
-forward OnSSCPlayerUpdate(playerid, bool:success, message[], Error:error, Node:result);
+// OnWarehousePlayerUpdate is called after WarehousePlayerUpdate finishes
+forward OnWarehousePlayerUpdate(playerid, bool:success, message[], Error:error, Node:result);
 
 
-// ParseStatus extracts success and message from SSC success responses:
+// ParseStatus extracts success and message from Warehouse success responses:
 //
 // {
 //     "result": {...},
@@ -52,14 +52,14 @@ stock Error:ParseStatus(Node:node, &bool:success, &Node:result, message[], len =
 // -
 
 static Map:playerCreatePlayerID;
-forward _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node);
+forward _warehouse_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node);
 
-stock Error:SSC_PlayerCreate(RequestsClient:client, playerid, Node:node) {
+stock Error:WarehousePlayerCreate(RequestsClient:client, playerid, Node:node) {
     new Request:id = RequestJSON(
         client,
         "/store/playerCreate",
         HTTP_METHOD_POST,
-        "_ssc_onPlayerCreate",
+        "_warehouse_onPlayerCreate",
         node
     );
     if(!IsValidRequest(id)) {
@@ -70,7 +70,7 @@ stock Error:SSC_PlayerCreate(RequestsClient:client, playerid, Node:node) {
 
     return NoError();
 }
-public _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node) {
+public _warehouse_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node) {
     new playerid = MAP_get_val_val(playerCreatePlayerID, _:id);
     MAP_remove_val(playerCreatePlayerID, _:id);
 
@@ -90,7 +90,7 @@ public _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node) {
     }
 
     JsonToggleGC(result, false);
-    CallLocalFunction("OnSSCPlayerCreate", "ddsdd", playerid, success, message, _:e, _:result);
+    CallLocalFunction("OnWarehousePlayerCreate", "ddsdd", playerid, success, message, _:e, _:result);
     JsonToggleGC(result, true);
 
     return;
@@ -102,9 +102,9 @@ public _ssc_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node) {
 // -
 
 static Map:playerGetPlayerID;
-forward _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node);
+forward _warehouse_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node);
 
-stock Error:SSC_PlayerGetByName(RequestsClient:client, playerid, name[]) {
+stock Error:WarehousePlayerGetByName(RequestsClient:client, playerid, name[]) {
     new path[128];
     format(path, sizeof path, "/store/playerGet?name=%s", name);
 
@@ -112,7 +112,7 @@ stock Error:SSC_PlayerGetByName(RequestsClient:client, playerid, name[]) {
         client,
         path,
         HTTP_METHOD_GET,
-        "_ssc_onPlayerGet"
+        "_warehouse_onPlayerGet"
     );
     if(!IsValidRequest(id)) {
         return Error(1, "failed to send playerGet request");
@@ -123,7 +123,7 @@ stock Error:SSC_PlayerGetByName(RequestsClient:client, playerid, name[]) {
     return NoError();
 }
 
-public _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node) {
+public _warehouse_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node) {
     new playerid = MAP_get_val_val(playerGetPlayerID, _:id);
     MAP_remove_val(playerGetPlayerID, _:id);
 
@@ -143,7 +143,7 @@ public _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node) {
     }
 
     JsonToggleGC(result, false);
-    CallLocalFunction("OnSSCPlayerGet", "ddsdd", playerid, success, message, _:e, _:result);
+    CallLocalFunction("OnWarehousePlayerGet", "ddsdd", playerid, success, message, _:e, _:result);
     JsonToggleGC(result, true);
 
     return;
@@ -155,14 +155,14 @@ public _ssc_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node) {
 // -
 
 static Map:playerUpdatePlayerID;
-forward _ssc_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node);
+forward _warehouse_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node);
 
-stock Error:SSC_PlayerUpdate(RequestsClient:client, playerid, Node:node) {
+stock Error:WarehousePlayerUpdate(RequestsClient:client, playerid, Node:node) {
     new Request:id = RequestJSON(
         client,
         "/store/playerUpdate",
         HTTP_METHOD_PATCH,
-        "_ssc_onPlayerUpdate",
+        "_warehouse_onPlayerUpdate",
         node
     );
     if(!IsValidRequest(id)) {
@@ -175,7 +175,7 @@ stock Error:SSC_PlayerUpdate(RequestsClient:client, playerid, Node:node) {
     return NoError();
 }
 
-public _ssc_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node) {
+public _warehouse_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node) {
     new playerid = MAP_get_val_val(playerGetPlayerID, _:id);
     MAP_remove_val(playerGetPlayerID, _:id);
 
@@ -195,6 +195,6 @@ public _ssc_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node) {
     }
 
     JsonToggleGC(result, false);
-    CallLocalFunction("OnSSCPlayerUpdate", "ddsdd", playerid, success, message, _:e, _:result);
+    CallLocalFunction("OnWarehousePlayerUpdate", "ddsdd", playerid, success, message, _:e, _:result);
     JsonToggleGC(result, true);
 }

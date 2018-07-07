@@ -1,4 +1,4 @@
-#include "ssc.inc"
+#include "warehouse.inc"
 
 #define RUN_TESTS
 #include <YSI\y_testing>
@@ -40,7 +40,7 @@ public OnScriptInit() {
         print("failed to create requests client");
     }
 
-    new Error:e = SSC_PlayerCreate(testClient, 0, JsonObject(
+    new Error:e = WarehousePlayerCreate(testClient, 0, JsonObject(
         "account", JsonObject(
             "name", JsonString("Southclaws"),
             "pass", JsonString("$2y$12$FY26qU4VUsT00lvv.FFGA.jMCAlHVgUatwlAuE9tf7j8rnevR0ioS"),
@@ -56,7 +56,7 @@ public OnScriptInit() {
 
 new PlayerObjectID[25];
 
-public OnSSCPlayerCreate(playerid, bool:success, message[], Error:error, Node:result) {
+public OnWarehousePlayerCreate(playerid, bool:success, message[], Error:error, Node:result) {
     if(IsError(error)) {
         PrintErrors();
         Handled();
@@ -72,14 +72,14 @@ public OnSSCPlayerCreate(playerid, bool:success, message[], Error:error, Node:re
 
     // Get the full record
 
-    new Error:e = SSC_PlayerGetByName(testClient, 0, "Southclaws");
+    new Error:e = WarehousePlayerGetByName(testClient, 0, "Southclaws");
     if(IsError(e)) {
         PrintErrors();
         Handled();
     }
 }
 
-public OnSSCPlayerGet(playerid, bool:success, message[], Error:error, Node:result) {
+public OnWarehousePlayerGet(playerid, bool:success, message[], Error:error, Node:result) {
     if(IsError(error)) {
         PrintErrors();
         Handled();
@@ -96,7 +96,7 @@ public OnSSCPlayerGet(playerid, bool:success, message[], Error:error, Node:resul
 
     // Update the record
 
-    new Error:e = SSC_PlayerUpdate(
+    new Error:e = WarehousePlayerUpdate(
         testClient,
         0,
         JsonObject(
@@ -120,7 +120,7 @@ public OnSSCPlayerGet(playerid, bool:success, message[], Error:error, Node:resul
     }
 }
 
-public OnSSCPlayerUpdate(playerid, bool:success, message[], Error:error, Node:result) {
+public OnWarehousePlayerUpdate(playerid, bool:success, message[], Error:error, Node:result) {
     if(IsError(error)) {
         PrintErrors();
         Handled();

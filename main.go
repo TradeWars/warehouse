@@ -9,7 +9,7 @@ import (
 
 func main() {
 	config := &server.Config{}
-	err := envconfig.Process("SSC", config)
+	err := envconfig.Process("WAREHOUSE", config)
 	if err != nil {
 		panic(err)
 	}

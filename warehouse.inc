@@ -6,6 +6,9 @@
 #include <map>
 
 
+// OnWarehouseIndex is called after WarehouseIndex finishes
+forward OnWarehouseIndex(bool:success, message[], Error:error, Node:result);
+
 // OnWarehousePlayerCreate is called after WarehousePlayerCreate finishes
 forward OnWarehousePlayerCreate(playerid, bool:success, message[], Error:error, Node:result);
 
@@ -48,6 +51,49 @@ stock Error:ParseStatus(Node:node, &bool:success, &Node:result, message[], len =
 
 
 // -
+// Interface: /
+// -
+
+forward _warehouse_onIndex(Request:id, E_HTTP_STATUS:status, Node:node);
+
+stock Error:WarehouseIndex(RequestsClient:client) {
+    new Request:id = RequestJSON(
+        client,
+        "/",
+        HTTP_METHOD_GET,
+        "_warehouse_onIndex"
+    );
+    if(!IsValidRequest(id)) {
+        return Error(1, "failed to send playerCreate request");
+    }
+    return NoError();
+}
+public _warehouse_onIndex(Request:id, E_HTTP_STATUS:status, Node:node) {
+    new bool:success;
+    new Node:result;
+    new message[128];
+    new Error:e;
+    if(status == HTTP_STATUS_OK) {
+        e = ParseStatus(node, success, result, message);
+        if(IsError(e)) {
+            e = Error(1, "failed to parse status");
+        }
+    } else {
+        e = Error(1, "status was not OK");
+    }
+
+    if(message[0] == 0) {
+        message[0] = '\1';
+    }
+
+    JsonToggleGC(result, false);
+    CallLocalFunction("OnWarehouseIndex", "dsdd", success, message, _:e, _:result);
+    JsonToggleGC(result, true);
+
+    return;
+}
+
+// -
 // Interface: /store/playerCreate
 // -
 
@@ -77,11 +123,13 @@ public _warehouse_onPlayerCreate(Request:id, E_HTTP_STATUS:status, Node:node) {
     new bool:success;
     new Node:result;
     new message[128];
-    new Error:e = ParseStatus(node, success, result, message);
-    if(IsError(e)) {
-        e = Error(1, "failed to parse status");
-    }
-    if(status != HTTP_STATUS_OK) {
+    new Error:e;
+    if(status == HTTP_STATUS_OK) {
+        e = ParseStatus(node, success, result, message);
+        if(IsError(e)) {
+            e = Error(1, "failed to parse status");
+        }
+    } else {
         e = Error(1, "status was not OK");
     }
 
@@ -130,11 +178,13 @@ public _warehouse_onPlayerGet(Request:id, E_HTTP_STATUS:status, Node:node) {
     new bool:success;
     new Node:result;
     new message[128];
-    new Error:e = ParseStatus(node, success, result, message);
-    if(IsError(e)) {
-        e = Error(1, "failed to parse status");
-    }
-    if(status != HTTP_STATUS_OK) {
+    new Error:e;
+    if(status == HTTP_STATUS_OK) {
+        e = ParseStatus(node, success, result, message);
+        if(IsError(e)) {
+            e = Error(1, "failed to parse status");
+        }
+    } else {
         e = Error(1, "status was not OK");
     }
 
@@ -182,11 +232,13 @@ public _warehouse_onPlayerUpdate(Request:id, E_HTTP_STATUS:status, Node:node) {
     new bool:success;
     new Node:result;
     new message[128];
-    new Error:e = ParseStatus(node, success, result, message);
-    if(IsError(e)) {
-        e = Error(1, "failed to parse status");
-    }
-    if(status != HTTP_STATUS_OK) {
+    new Error:e;
+    if(status == HTTP_STATUS_OK) {
+        e = ParseStatus(node, success, result, message);
+        if(IsError(e)) {
+            e = Error(1, "failed to parse status");
+        }
+    } else {
         e = Error(1, "status was not OK");
     }
 

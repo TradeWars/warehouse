@@ -6,7 +6,7 @@
 	"dependencies": [
 		"sampctl/samp-stdlib",
 		"Southclaws/pawn-errors:1.2.2",
-		"Southclaws/pawn-requests:0.8.2",
+		"Southclaws/pawn-requests:0.8.3",
 		"BigETI/pawn-map"
 	],
 	"dev_dependencies": [

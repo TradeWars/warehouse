@@ -26,13 +26,18 @@ jobs:
     # - master is the latest public/live/production version
     # - staging is the next stable public/live/production version
     # - develop is the rolling development release version
-    - stage: deploy
+    - stage: deploy-branch
       name: deploy
-      if: branch IN (master, staging, develop) AND tag = true
+      if: branch IN (master, staging, develop)
       script:
         - make static
         - docker build -t temp .
         - docker tag temp southclaws/tw-warehouse:$TRAVIS_BRANCH
         - docker push southclaws/tw-warehouse:$TRAVIS_BRANCH
+    - stage: deploy-tag
+      if: tag = true
+      script:
+        - make static
+        - docker build -t temp .
         - docker tag temp southclaws/tw-warehouse:$TRAVIS_TAG
         - docker push southclaws/tw-warehouse:$TRAVIS_TAG

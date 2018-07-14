@@ -18,13 +18,16 @@ before_script:
 jobs:
   include:
     - stage: test
+      name: tests
       script:
         - go test -v -race ./server
     - stage: deploy
+      name: build
       script:
         - echo $TRAVIS_BRANCH
         - make static
     - if: branch IN (master, staging, develop)
+      name: deploy
       script:
         - docker build -t temp .
         - docker tag temp southclaws/tw-warehouse:$TRAVIS_BRANCH

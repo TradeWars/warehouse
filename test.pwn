@@ -4,6 +4,8 @@
 #include <YSI\y_testing>
 
 
+new buf[4096];
+
 Test:ParseStatus() {
     new Node:n = JsonObject(
         "result", JsonObject(
@@ -40,6 +42,14 @@ public OnScriptInit() {
         print("failed to create requests client");
     }
 
+    new Error:e = WarehouseIndex(testClient);
+    if(IsError(e)) {
+        PrintErrors();
+        Handled();
+    }
+}
+
+public OnWarehouseIndex(bool:success, message[], Error:error, Node:result) {
     new Error:e = WarehousePlayerCreate(testClient, 0, JsonObject(
         "account", JsonObject(
             "name", JsonString("Southclaws"),
@@ -52,6 +62,7 @@ public OnScriptInit() {
         PrintErrors();
         Handled();
     }
+    return;
 }
 
 new PlayerObjectID[25];
@@ -90,9 +101,8 @@ public OnWarehousePlayerGet(playerid, bool:success, message[], Error:error, Node
         return;
     }
 
-    new buf[512];
     JsonStringify(result, buf);
-    print(buf);
+    printf("success: %s", buf);
 
     // Update the record
 
@@ -131,9 +141,8 @@ public OnWarehousePlayerUpdate(playerid, bool:success, message[], Error:error, N
         return;
     }
 
-    new buf[512];
     JsonStringify(result, buf);
-    print(buf);
+    printf("success: %s", buf);
 }
 
 public OnRequestFailure(Request:id, errorCode, errorMessage[], len) {

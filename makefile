@@ -24,6 +24,18 @@ release: build push
 	# build release binaries with current version tag
 	GITHUB_TOKEN=$(GITHUB_TOKEN) goreleaser --rm-dist
 
+local:
+	WAREHOUSE_TEMPORARY=false \
+	WAREHOUSE_BIND=localhost:7788 \
+	WAREHOUSE_AUTH=cunning_fox \
+	WAREHOUSE_MONGO_HOST=localhost \
+	WAREHOUSE_MONGO_PORT=27017 \
+	WAREHOUSE_MONGO_NAME=warehouse \
+	WAREHOUSE_MONGO_USER=warehouse \
+	WAREHOUSE_MONGO_PASS=warehouse \
+	DEBUG=1 \
+	./warehouse
+
 # -
 # Testing
 # -
@@ -31,23 +43,24 @@ release: build push
 test:
 	TESTING=1 go test -v -race ./server
 
+test-pawn:
+	sampctl p build
+	sampctl p run
+
+test-all: test test-pawn
+
 databases:
 	-docker stop mongodb
 	-docker rm mongodb
-	-docker stop postgres
-	-docker rm postgres
 	-docker stop express
 	-docker rm express
 	docker run \
 		--name mongodb \
 		--publish 27017:27017 \
+		-e MONGO_INITDB_ROOT_USERNAME=warehouse \
+		-e MONGO_INITDB_ROOT_PASSWORD=warehouse \
 		--detach \
 		mongo
-	docker run \
-		--name postgres \
-		--publish 5432:5432 \
-		--detach \
-		postgres
 	sleep 5
 	docker run \
 		--name express \

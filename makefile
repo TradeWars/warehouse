@@ -21,8 +21,14 @@ release: build push
 	# re-tag this commit
 	-git tag -d $(VERSION)
 	git tag $(VERSION)
-	# build release binaries with current version tag
-	GITHUB_TOKEN=$(GITHUB_TOKEN) goreleaser --rm-dist
+	# note: this requires that the configuration contains:
+	# [remote "origin"]
+	#     url = ...
+	#     fetch = +refs/heads/*:refs/remotes/origin/*
+	#     push = +refs/heads/*
+	#     push = +refs/tags/*
+	# in order to force tags to push alongside everything else.
+	git push
 
 local:
 	WAREHOUSE_TEMPORARY=false \

@@ -21,8 +21,9 @@ jobs:
       name: tests
       script:
         - go test -v -race ./server
-    - if: branch IN (master, staging, develop)
+    - stage: deploy
       name: deploy
+      if: branch IN (master, staging, develop)
       script:
         - make static
         - docker build -t temp .

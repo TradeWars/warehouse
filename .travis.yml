@@ -28,7 +28,7 @@ jobs:
     # - develop is the rolling development release version
     - stage: deploy
       name: deploy
-      if: branch IN (master, staging, develop)
+      if: branch IN (master, staging, develop) AND tag = true
       script:
         - make static
         - docker build -t temp .

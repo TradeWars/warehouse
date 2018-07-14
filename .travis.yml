@@ -1,11 +1,11 @@
 sudo: required
 conditions: v1
 language: go
-go:
-  - 1.10.x
 services:
   - docker
   - mongodb
+go:
+  - 1.10.x
 env:
   - DEBUG=1 TESTING=1
 before_script:
@@ -17,10 +17,15 @@ before_script:
       });'
 jobs:
   include:
+    # run unit tests
     - stage: test
       name: tests
       script:
         - go test -v -race ./server
+    # deploy only if on one of the main branches
+    # - master is the latest public/live/production version
+    # - staging is the next stable public/live/production version
+    # - develop is the rolling development release version
     - stage: deploy
       name: deploy
       if: branch IN (master, staging, develop)

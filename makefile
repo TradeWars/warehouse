@@ -17,7 +17,7 @@ static:
 next:
 	echo $(NEW_VERSION) > VERSION
 
-release: build push
+release:
 	# re-tag this commit
 	-git tag -d $(VERSION)
 	git tag $(VERSION)

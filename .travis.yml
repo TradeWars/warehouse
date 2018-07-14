@@ -20,12 +20,13 @@ stages:
       - go test -v -race ./server
   - name: build
     script:
+      - echo $TRAVIS_BRANCH
       - make static
   - name: deploy
     if: branch IN (master, staging, develop)
     script:
       - docker build -t temp .
-      - docker tag temp southclaws/tw-warehouse:${TRAVIS_BRANCH}
-      - docker push southclaws/tw-warehouse:${TRAVIS_BRANCH}
-      - docker tag temp southclaws/tw-warehouse:${TRAVIS_TAG}
-      - docker push southclaws/tw-warehouse:${TRAVIS_TAG}
+      - docker tag temp southclaws/tw-warehouse:$TRAVIS_BRANCH
+      - docker push southclaws/tw-warehouse:$TRAVIS_BRANCH
+      - docker tag temp southclaws/tw-warehouse:$TRAVIS_TAG
+      - docker push southclaws/tw-warehouse:$TRAVIS_TAG

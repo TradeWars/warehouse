@@ -36,7 +36,7 @@ jobs:
         - docker push southclaws/tw-warehouse:$TRAVIS_BRANCH
     - stage: deploy-tag
       name: deploy-tag
-      if: tag = true
+      if: tag IS present
       script:
         - make static
         - docker build -t temp .

@@ -1,10 +1,12 @@
+sudo: required
 language: go
 go:
   - 1.10.x
+services:
+  - docker
+  - mongodb
 env:
   - DEBUG=1 TESTING=1
-services:
-  - mongodb
 before_script:
   - |
     mongo ss --eval 'db.createUser({
@@ -12,5 +14,18 @@ before_script:
         pwd:"root",
         roles:["readWrite"]
       });'
-script:
-  - go test -v -race ./server
+stages:
+  - name: test
+    script:
+      - go test -v -race ./server
+  - name: build
+    script:
+      - make static
+  - name: deploy
+    if: branch IN (master, staging, develop)
+    script:
+      - docker build -t temp .
+      - docker tag temp southclaws/tw-warehouse:${TRAVIS_BRANCH}
+      - docker push southclaws/tw-warehouse:${TRAVIS_BRANCH}
+      - docker tag temp southclaws/tw-warehouse:${TRAVIS_TAG}
+      - docker push southclaws/tw-warehouse:${TRAVIS_TAG}
